@@ -1,47 +1,43 @@
 <?php
-session_start();
+    session_start();
 
-include "./Connect.php";
+    include "./Connect.php";
 
-if (isset($_POST['Submit'])) {
+    if (isset($_POST['Submit'])) {
 
-    $email = $_POST['email'];
-    $Password = $_POST['password'];
+        $name     = $_POST['name'];
+        $email    = $_POST['email'];
+        $phone    = $_POST['phone'];
+        $password = $_POST['password'];
+        $type     = 2;
 
-    $query = mysqli_query($con, "SELECT * FROM users WHERE email ='$email' AND password = '$Password'");
+        $query = mysqli_query($con, "SELECT * FROM users WHERE email ='$email' AND password = '$password'");
 
-    if (mysqli_num_rows($query) > 0) {
-
-        $row = mysqli_fetch_array($query);
-
-        $id = $row['id'];
-        $type_id = $row['user_type_id'];
-
-        if ($type_id == 1) {
-
-            $_SESSION['A_Log'] = $id;
+        if (mysqli_num_rows($query) > 0) {
 
             echo '<script language="JavaScript">
-          document.location="Admin_Dashboard/";
-          </script>';
+        alert ("Account Already exist !")
+        </script>';
 
-        } else if ($type_id == 2) {
+        } else {
 
-            $_SESSION['S_Log'] = $id;
+            $stmt = $con->prepare("INSERT INTO users (user_type_id, name, email, phone, password) VALUES (?, ?, ?, ?, ?) ");
 
-            echo '<script language="JavaScript">
-            document.location="Seller_Dashboard/";
-            </script>';
+            $stmt->bind_param("issss", $type, $name, $email, $phone, $password);
 
+            if ($stmt->execute()) {
+
+                echo "<script language='JavaScript'>
+              alert ('Signed up succefully, You can login now !');
+         </script>";
+
+                echo "<script language='JavaScript'>
+        document.location='./Login.php';
+           </script>";
+
+            }
         }
-
-    } else {
-
-        echo '<script language="JavaScript">
-	  alert ("Error ... Please Check Email Or Password !")
-      </script>';
     }
-}
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +46,7 @@ if (isset($_POST['Submit'])) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Login Page</title>
+    <title>Signup Page</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -112,14 +108,30 @@ if (isset($_POST['Submit'])) {
                   <div class="card-body">
                     <div class="pt-4 pb-2">
                       <h5 class="card-title text-center pb-0 fs-4">
-                        Login to Your Account
+                        Create New Account
                       </h5>
-                      <p class="text-center small">
-                        Enter your Name & Password to login
-                      </p>
+
                     </div>
 
-                    <form class="row g-3 needs-validation" method="POST" action="Login.php" id="login-form" >
+                    <form class="row g-3 needs-validation" method="POST" action="./Signup.php" id="signup-form" >
+
+                    <div class="col-12">
+                        <label for="name" class="form-label">Name</label>
+                        <div class="input-group has-validation">
+
+                          <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            id="Name"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter a valid Name!
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="col-12">
                         <label for="name" class="form-label">Email</label>
                         <div class="input-group has-validation">
@@ -132,7 +144,24 @@ if (isset($_POST['Submit'])) {
                             required
                           />
                           <div class="invalid-feedback">
-                            Please enter a valid Name adddress!
+                            Please enter a valid Email adddress!
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-12">
+                        <label for="name" class="form-label">Phone</label>
+                        <div class="input-group has-validation">
+
+                          <input
+                            type="text"
+                            name="phone"
+                            class="form-control"
+                            id="Name"
+                            required
+                          />
+                          <div class="invalid-feedback">
+                            Please enter a valid Phone adddress!
                           </div>
                         </div>
                       </div>
@@ -153,29 +182,16 @@ if (isset($_POST['Submit'])) {
                         </div>
                       </div>
 
-                      <div class="col-12">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="remember"
-                            value="true"
-                            id="rememberMe"
-                          />
-                          <label class="form-check-label" for="rememberMe"
-                            >Remember me</label
-                          >
-                        </div>
-                      </div>
+
                       <div class="col-12">
                         <p class="small mb-0">
-                          Don't Have Account
-                          <a href="./Signup.php">Signup Now</a>
+                          Already have account?
+                          <a href="./Login.php">Login Now</a>
                         </p>
                       </div>
                       <div class="col-12">
                         <button class="btn btn-primary w-100" type="submit" name="Submit">
-                          Login
+                          Signup
                         </button>
                       </div>
 
