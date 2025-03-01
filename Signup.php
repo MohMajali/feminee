@@ -51,8 +51,8 @@
     <meta content="" name="keywords" />
 
     <!-- Favicons -->
-    <link href="assets/img/Logo.jpg" rel="icon" />
-    <link href="assets/img/Logo.jpg" rel="apple-touch-icon" />
+    <link href="assets/img/Logo.png" rel="icon" />
+    <link href="assets/img/Logo.png" rel="apple-touch-icon" />
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect" />
@@ -96,7 +96,7 @@
                     href="index.php"
                     class="logo d-flex align-items-center w-auto"
                   >
-                    <img src="assets/img/Logo.jpg" alt="" width="50px"/>
+                    <img src="assets/img/Logo.png" alt="" width="50px"/>
                     <span class="d-none d-lg-block text-uppercase"
                       >Feminee</span
                     >
