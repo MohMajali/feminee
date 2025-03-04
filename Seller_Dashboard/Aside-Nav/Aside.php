@@ -9,14 +9,14 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="./Categories.php">
-        <i class="bi bi-layout-text-sidebar-reverse"></i><span>Categories</span>
+      <a class="nav-link collapsed" href="./Account.php">
+        <i class="bi bi-file-person"></i><span>Account</span>
       </a>
     </li>
         
     <li class="nav-item">
-      <a class="nav-link collapsed" href="./Sellers.php">
-        <i class="bi bi-people-fill"></i><span>Sellers</span>
+      <a class="nav-link collapsed" href="./Products.php">
+        <i class="bi bi-box-seam"></i><span>Products</span>
       </a>
     </li>
 
@@ -28,14 +28,8 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="./Users.php">
-        <i class="bi bi-person-bounding-box"></i><span>Users</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
       <a class="nav-link collapsed" href="./Orders.php">
-        <i class="bi bi-calendar3"></i><span>Orders</span>
+        <i class="bi bi-cart-check"></i><span>Orders</span>
       </a>
     </li>
 
