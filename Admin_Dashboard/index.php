@@ -1,24 +1,35 @@
 <?php
-session_start();
+    session_start();
 
-include "../Connect.php";
+    include "../Connect.php";
 
-$A_ID = $_SESSION['A_Log'];
+    $A_ID = $_SESSION['A_Log'];
 
-if (!$A_ID) {
+    if (! $A_ID) {
 
-    echo '<script language="JavaScript">
+        echo '<script language="JavaScript">
      document.location="../Login.php";
     </script>';
 
-} else {
+    } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
-    $row1 = mysqli_fetch_array($sql1);
+        $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
+        $row1 = mysqli_fetch_array($sql1);
 
-    $name = $row1['name'];
-    $email = $row1['email'];
-}
+        $name  = $row1['name'];
+        $email = $row1['email'];
+
+        $orderSql = mysqli_query($con, "select SUM(total_price) AS total_price, COUNT(id) AS orders_count from orders");
+        $orderRow = mysqli_fetch_array($orderSql);
+
+        $total_price  = $orderRow['total_price'];
+        $orders_count = $orderRow['orders_count'];
+
+        $productSql = mysqli_query($con, "select COUNT(id) AS products_count from products WHERE active = 1");
+        $productRow = mysqli_fetch_array($productSql);
+
+        $products_count = $productRow['products_count'];
+    }
 
 ?>
 
@@ -148,7 +159,7 @@ if (!$A_ID) {
               <div class="card-body">
                 <h5 class="card-title">IN STOCK</h5>
 
-            1000
+                <?php echo $products_count ?? 0 ?>
               </div>
             </div>
           </div>
@@ -158,7 +169,7 @@ if (!$A_ID) {
               <div class="card-body">
                 <h5 class="card-title"># Orders</h5>
 
-            500
+                <?php echo $orders_count ?? 0 ?>
               </div>
             </div>
           </div>
@@ -168,7 +179,7 @@ if (!$A_ID) {
               <div class="card-body">
                 <h5 class="card-title"># Total Cash</h5>
 
-            55,000
+                <?php echo $total_price ?? 0 ?> JODs
               </div>
             </div>
           </div>
@@ -178,7 +189,7 @@ if (!$A_ID) {
               <div class="card-body">
                 <h5 class="card-title">Profits</h5>
 
-            1200 JODs
+                <?php echo $total_price * 0.10 ?? 0 ?> JODs
               </div>
             </div>
           </div>

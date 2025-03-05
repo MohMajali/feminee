@@ -179,7 +179,7 @@
               <div class="card-body">
                 <h5 class="card-title"># Total Cash</h5>
 
-                <?php echo $total_price ?? 0 ?> JDs
+                <?php echo $total_price ?? 0 ?> JODs
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@
               <div class="card-body">
                 <h5 class="card-title">Profits</h5>
 
-                <?php echo $total_price ?? 0 ?> JDs
+                <?php echo $total_price ?? 0 ?> JODs
               </div>
             </div>
           </div>

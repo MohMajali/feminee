@@ -11,6 +11,37 @@
         $password = $_POST['password'];
         $type     = 2;
 
+        $price;
+
+        $start_date        = $_POST['start_date'];
+        $subscription_type = $_POST['subscription_type'];
+
+        if ($subscription_type == 1) {
+
+            $end_date          = date('Y-m-d', strtotime($start_date . ' +30 days'));
+            $subscription_type = "1 Months Contract (65 JOD)";
+            $price             = 65;
+
+        } else if ($subscription_type == 2) {
+
+            $end_date          = date('Y-m-d', strtotime($start_date . ' +90 days'));
+            $subscription_type = "3 Months Contract (150 JOD)";
+            $price             = 150;
+
+        } else if ($subscription_type == 3) {
+
+            $end_date          = date('Y-m-d', strtotime($start_date . ' +180 days'));
+            $subscription_type = "6 Months Contract (300 JOD)";
+            $price             = 300;
+
+        } else if ($subscription_type == 4) {
+
+            $end_date          = date('Y-m-d', strtotime($start_date . ' +360 days'));
+            $subscription_type = "12 Months COntract (600 JOD)";
+            $price             = 600;
+
+        }
+
         $query = mysqli_query($con, "SELECT * FROM users WHERE email ='$email' AND password = '$password'");
 
         if (mysqli_num_rows($query) > 0) {
@@ -26,6 +57,12 @@
             $stmt->bind_param("issss", $type, $name, $email, $phone, $password);
 
             if ($stmt->execute()) {
+
+                $seller_id = $con->insert_id;
+
+                $stmt = $con->prepare("INSERT INTO seller_subscriptions (seller_id, subscription_type, start_date, end_date, price) VALUES (?, ?, ?, ?, ?) ");
+                $stmt->bind_param("isssd", $seller_id, $subscription_type, $start_date, $end_date, $price);
+                $stmt->execute();
 
                 echo "<script language='JavaScript'>
               alert ('Signed up succefully, You can login now !');
@@ -115,7 +152,7 @@
 
                     <form class="row g-3 needs-validation" method="POST" action="./Signup.php" id="signup-form" >
 
-                    <div class="col-12">
+                    <div class="col-6">
                         <label for="name" class="form-label">Name</label>
                         <div class="input-group has-validation">
 
@@ -132,7 +169,7 @@
                         </div>
                       </div>
 
-                      <div class="col-12">
+                      <div class="col-6">
                         <label for="name" class="form-label">Email</label>
                         <div class="input-group has-validation">
 
@@ -149,7 +186,7 @@
                         </div>
                       </div>
 
-                      <div class="col-12">
+                      <div class="col-6">
                         <label for="name" class="form-label">Phone</label>
                         <div class="input-group has-validation">
 
@@ -166,7 +203,7 @@
                         </div>
                       </div>
 
-                      <div class="col-12">
+                      <div class="col-6">
                         <label for="yourPassword" class="form-label"
                           >Password</label
                         >
@@ -181,6 +218,33 @@
                           Please enter your password!
                         </div>
                       </div>
+
+                      <div class="col-12">
+                      <label for="subscription_type" class="form-label"
+                          >Select Subscriptions Type</label
+                        >
+                        <select name="subscription_type" class="form-select" id="subscription_type" required>
+                            <option value="1">1 Months  Subscriptions (65 JOD)</option>
+                            <option value="2">3 Months  Subscriptions (150 JOD)</option>
+                            <option value="3">6 Months Subscriptions (300 JOD)</option>
+                        </select>
+                      </div>
+
+                      <div class="col-12">
+                        <label for="startDate" class="form-label"
+                          >Contract Start Date</label
+                        >
+                        <input
+                          type="date"
+                          name="start_date"
+                          min="<?php echo date('Y-m-d') ?>"
+                          class="form-control"
+                          id="startDate"
+                          required
+                        />
+                      </div>
+
+
 
 
                       <div class="col-12">

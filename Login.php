@@ -168,10 +168,16 @@ if (isset($_POST['Submit'])) {
                       </div>
                       <div class="col-12">
                         <p class="small mb-0">
-                          Don't Have Account
-                          <a href="./Signup.php">Signup Now</a>
+                          Become New Seller!
+                          <a href="./Seller-Signup.php">Join Us Now!</a>
                         </p>
                       </div>
+                      <!-- <div class="col-12">
+                        <p class="small mb-0">
+                          New Customer?
+                          <a href="./Customer-Signup.php">Become Feminee Customer!</a>
+                        </p>
+                      </div> -->
                       <div class="col-12">
                         <button class="btn btn-primary w-100" type="submit" name="Submit">
                           Login
