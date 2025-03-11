@@ -49,10 +49,10 @@
 
                 foreach ($colors as $color) {
 
-                    $colorStmt = $con->prepare("INSERT INTO product_options (product_id, name, value, quantity)
-                        VALUES (?, ?, ?, ?)");
+                    $colorStmt = $con->prepare("INSERT INTO product_options (product_id, name, value)
+                        VALUES (?, ?, ?)");
 
-                    $colorStmt->bind_param("issi", $product_id, $name, $color, $qty_option);
+                    $colorStmt->bind_param("iss", $product_id, $name, $color);
                     $colorStmt->execute();
                 }
 
@@ -61,7 +61,7 @@
                 foreach ($sizes as $size) {
 
                     $sizeStmt = $con->prepare("INSERT INTO product_options (product_id, name, value)
-                        VALUES (?, ?, ?, ?)");
+                        VALUES (?, ?, ?)");
 
                     $sizeStmt->bind_param("iss", $product_id, $name, $size);
                     $sizeStmt->execute();

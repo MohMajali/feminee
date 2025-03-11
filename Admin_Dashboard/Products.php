@@ -198,7 +198,7 @@
                           $sellerSql = mysqli_query($con, "SELECT * FROM users WHERE id = '$seller_id'");
                           $row2      = mysqli_fetch_array($sellerSql);
 
-                          $sellerName = $row1['name'];
+                          $sellerName = $row2['name'];
 
                       ?>
                     <tr>

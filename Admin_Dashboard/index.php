@@ -129,7 +129,7 @@
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Dashboard</h1>
+        <h1>Home Page</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
@@ -143,9 +143,9 @@
          <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card basic">
               <div class="card-body">
-                <h5 class="card-title">WELCOMEING ADMING</h5>
+                <h5 class="card-title">Welcome to femniee</h5>
 
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorum amet quod impedit voluptate esse cum dignissimos ad. Assumenda earum commodi vel libero, maiores, illum blanditiis dignissimos quas, dolore sunt sequi.
+                fkenf efneiujf hjbfe
 
               </div>
             </div>
