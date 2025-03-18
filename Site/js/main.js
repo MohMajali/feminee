@@ -133,8 +133,13 @@
 
     // Product Quantity
     $('.quantity button').on('click', function () {
+        
         var button = $(this);
         var oldValue = button.parent().parent().find('input').val();
+        var maxInput = button.parent().parent().find('input').attr('max');
+
+
+        
         if (button.hasClass('btn-plus')) {
             var newVal = parseFloat(oldValue) + 1;
         } else {
@@ -144,7 +149,11 @@
                 newVal = 0;
             }
         }
-        button.parent().parent().find('input').val(newVal);
+
+        if(newVal <= parseInt(maxInput)) {
+
+            button.parent().parent().find('input').val(newVal);
+        }
     });
 
 })(jQuery);

@@ -150,7 +150,7 @@
 
                     </div>
 
-                    <form class="row g-3 needs-validation" method="POST" action="./Signup.php" id="signup-form" >
+                    <form class="row g-3 needs-validation" method="POST" action="./Seller-Signup.php" id="signup-form" >
 
                     <div class="col-6">
                         <label for="name" class="form-label">Name</label>

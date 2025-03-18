@@ -5,8 +5,10 @@ include "../Connect.php";
 
 $products = [];
 
-$category_id = $_GET['category_id'];
-$price = $_GET['price'];
+$category_id     = $_GET['category_id'];
+$sub_category_id = $_GET['sub_category_id'];
+$price           = $_GET['price'];
+$filter          = $_GET['filter'];
 
 $sql = "SELECT products.id, products.name, products.price, products.description, products.image,
 categories.name AS category_name
@@ -14,6 +16,28 @@ categories.name AS category_name
 from products
 INNER JOIN categories ON categories.id = products.category_id
 WHERE products.active = 1";
+
+if ($filter === 'popularity') {
+
+    $sql = "SELECT products.id, products.name, products.price, products.description, products.image,
+categories.name AS category_name
+
+from products
+INNER JOIN categories ON categories.id = products.category_id
+WHERE products.active = 1
+ORDER BY products.total_rate DESC
+";
+} else if ($filter === 'price') {
+
+    $sql = "SELECT products.id, products.name, products.price, products.description, products.image,
+    categories.name AS category_name
+
+    from products
+    INNER JOIN categories ON categories.id = products.category_id
+    WHERE products.active = 1
+    ORDER BY products.price DESC
+    ";
+}
 
 if ($category_id) {
 
@@ -23,6 +47,17 @@ if ($category_id) {
     from products
     INNER JOIN categories ON categories.id = products.category_id
     WHERE products.active = 1 AND products.category_id = '$category_id'";
+
+}
+
+if ($sub_category_id) {
+
+    $sql = "SELECT products.id, products.name, products.price, products.description, products.image,
+    categories.name AS category_name
+
+    from products
+    INNER JOIN categories ON categories.id = products.sub_category_id
+    WHERE products.active = 1 AND products.sub_category_id = '$sub_category_id'";
 
 }
 

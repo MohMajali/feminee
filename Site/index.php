@@ -3,6 +3,16 @@
 
     include "../Connect.php";
 
+    $B_ID = $_SESSION['B_ID'];
+
+    if($B_ID) {
+
+        $sql1 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
+        $row1 = mysqli_fetch_array($sql1);
+    
+        $cart_count = $row1['cart_count'];
+    }
+
 ?>
 
 
@@ -15,6 +25,10 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
+
+        
+    <link href="../assets/img/Logo.png" rel="icon" />
+    <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,25 +86,21 @@
                             <a href="index.php" class="nav-item nav-link active">Home</a>
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
-                            <a href="shop-detail.php" class="nav-item nav-link">Shop Detail</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                    <a href="cart.php" class="dropdown-item">Cart</a>
-                                    <a href="chackout.php" class="dropdown-item">Chackout</a>
-                                    <a href="testimonial.php" class="dropdown-item">Testimonial</a>
-                                    <a href="404.php" class="dropdown-item">404 Page</a>
-                                </div>
-                            </div>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
+                            <?php if ($B_ID) {?>
+                                <a href="Orders.php" class="nav-item nav-link">Orders</a>
+                            <?php }?>
+                            <?php if (! $B_ID) {?>
+                            <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php }?>
                         </div>
                         <div class="d-flex m-3 me-0">
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="#" class="position-relative me-4 my-auto">
+                            <a href="./Cart.php" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count?></span>
                             </a>
-                            <a href="#" class="my-auto">
+                            <a href="./Profile.php" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                         </div>
@@ -141,18 +151,18 @@
 
                                 while ($row1 = mysqli_fetch_array($sql1)) {
 
-                                    $adv_id   = $row1['id'];
-                                    $adv_title   = $row1['title'];
-                                    $adv_image   = $row1['image'];
+                                    $adv_id    = $row1['id'];
+                                    $adv_title = $row1['title'];
+                                    $adv_image = $row1['image'];
 
                                 ?>
 
                                 <div class="carousel-item active rounded">
-                                    <img src="../Admin_Dashboard/<?php echo $adv_image?>" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
-                                    <a href="#" class="btn px-4 py-2 text-white rounded"><?php echo $adv_title?></a>
+                                    <img src="../Admin_Dashboard/<?php echo $adv_image ?>" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
+                                    <a href="#" class="btn px-4 py-2 text-white rounded"><?php echo $adv_title ?></a>
                                 </div>
-                               
-                                <?php } ?>
+
+                                <?php }?>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

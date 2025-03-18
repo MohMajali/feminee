@@ -2,14 +2,15 @@
     session_start();
 
     include "../Connect.php";
+
     $B_ID = $_SESSION['B_ID'];
 
     if ($B_ID) {
 
-        $sql1 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
-        $row1 = mysqli_fetch_array($sql1);
+        $sql211 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
+        $row211 = mysqli_fetch_array($sql211);
 
-        $cart_count = $row1['cart_count'];
+        $cart_count = $row211['cart_count'];
     }
 
 ?>
@@ -24,6 +25,8 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
+
+        
     <link href="../assets/img/Logo.png" rel="icon" />
     <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
 
@@ -82,7 +85,7 @@
                         <div class="navbar-nav mx-auto">
                             <a href="index.php" class="nav-item nav-link ">Home</a>
                             <a href="Products.php" class="nav-item nav-link">Products</a>
-                            <a href="Sellers.php" class="nav-item nav-link active">Sellers</a>
+                            <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
@@ -95,7 +98,7 @@
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                             <a href="./Cart.php" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;" id="cartCount"><?php echo $cart_count ?></span>
                             </a>
                             <a href="./Profile.php" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
@@ -130,49 +133,140 @@
 
         <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">Sellers</h1>
+            <h1 class="text-center text-white display-6">Cart</h1>
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="./Sellers.php">Sellers</a></li>
+                <li class="breadcrumb-item active text-white">Cart</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
 
 
-        <!-- Fruits Shop Start-->
-        <div class="container-fluid fruite py-5">
+        <!-- Cart Page Start -->
+        <div class="container-fluid py-5">
             <div class="container py-5">
-                <h1 class="mb-4">Feminee Sellers</h1>
-                <div class="row g-4">
-                    <div class="col-lg-12">
-                        <div class="row g-4">
-                            <div class="col-xl-3">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Products</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Handle</th>
+                          </tr>
+                        </thead>
+                        <tbody>
 
-                            </div>
-                            <div class="col-6"></div>
-                            <div class="col-xl-3">
-                                <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                                    <label for="fruits">Default Sorting:</label>
-                                    <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
-                                        <option value="nothing">Nothing</option>
-                                        <option value="popularity">Popularity</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-4">
+                        <?php
+                            $sql33 = mysqli_query($con, "SELECT * from carts WHERE buyer_id = '$B_ID'");
 
-                            <div class="col-lg-12">
-                                <div class="row g-4 justify-content-center" id="sellers_div">
-                                     
+                            $totalPrice = 0;
+
+                            while ($row33 = mysqli_fetch_array($sql33)) {
+
+                                $cart_id    = $row33['id'];
+                                $product_id = $row33['product_id'];
+                                $options    = json_decode($row33['options'], true);
+                                $color_id   = $options['color_id'];
+                                $size_id    = $options['size_id'];
+                                $qty        = $row33['qty'];
+
+                                $sql55 = mysqli_query($con, "SELECT name, image, price, qty from products WHERE id = '$product_id'");
+                                $row55 = mysqli_fetch_array($sql55);
+
+                                $product_name  = $row55['name'];
+                                $product_image = $row55['image'];
+                                $product_price = $row55['price'];
+                                $product_qty   = $row55['qty'];
+
+                                if ($color_id != '') {
+
+                                    $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
+                                    $row66 = mysqli_fetch_array($sql66);
+
+                                    $color_value = $row66['value'];
+                                }
+
+                                if ($size_id != '') {
+
+                                    $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
+                                    $row77 = mysqli_fetch_array($sql77);
+
+                                    $size_value = $row77['value'];
+
+                                }
+
+                                $totalPrice += ($product_price * $qty);
+
+                            ?>
+
+                            <tr>
+                                <th scope="row">
+                                    <div class="d-flex align-items-center">
+                                        <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                    </div>
+                                </th>
+                                <td>
+                                    <p class="mb-0 mt-4"><?php echo $product_name ?></p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4"><?php echo $product_price ?> JODs</p>
+                                </td>
+                                <td>
+                                <p class="mb-0 mt-4"><?php echo $qty ?></p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4"><?php echo $product_price * $qty ?> JODs</p>
+                                </td>
+                                <td>
+                                    <a href="./DeleteFromCart.php?cart_id=<?php echo $cart_id ?>" class="btn btn-md rounded-circle bg-light border mt-4 delete-btn" >
+                                        <i class="fa fa-times text-danger"></i>
+                                    </a>
+                                </td>
+
+                            </tr>
+
+
+<?php }?>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-5">
+                    <!-- <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
+                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button> -->
+                </div>
+                <div class="row g-4 justify-content-end">
+                    <div class="col-8"></div>
+                    <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                        <div class="bg-light rounded">
+                            <div class="p-4">
+                                <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                                <div class="d-flex justify-content-between mb-4">
+                                    <h5 class="mb-0 me-4">Subtotal:</h5>
+                                    <p class="mb-0"><?php echo $totalPrice ?> JODs</p>
                                 </div>
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="mb-0 me-4">Shipping</h5>
+                                    <div class="">
+                                        <p class="mb-0">Flat rate: 2.00 JODs</p>
+                                    </div>
+                                </div>
+                                <!-- <p class="mb-0 text-end">Shipping to Ukraine.</p> -->
                             </div>
+                            <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                                <h5 class="mb-0 ps-4 me-4">Total</h5>
+                                <p class="mb-0 pe-4"><?php echo $totalPrice + 2 ?> JODs</p>
+                            </div>
+                            <a href="./Checkout.php" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Proceed Checkout</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Fruits Shop End-->
+        <!-- Cart Page End -->
 
 
         <!-- Footer Start -->
@@ -194,89 +288,13 @@
     <script src="lib/lightbox/js/lightbox.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
+
+
+
+
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <script>
-        $(document).ready(function() {
-            $.ajax({
-                url: `./GetSellers.php`,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#sellers_div').empty();
-                data.forEach((seller, i) => {
 
-                        let sellerHtml = `
-
-
-                                    <div class="col-md-6 col-lg-6 col-xl-4">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                <img src="../Seller_Dashboard/${seller.image}" class="img-fluid w-100 rounded-top" alt="">
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${seller.total_rate}</div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4><?php echo $seller_name ?></h4>
-                                                <p>${seller.description.substring(0, 10)}...</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">(${seller.total_rate})</p>
-                                                    <a href="./Seller.php?seller_id=${seller.id}" class="btn border border-secondary rounded-pill px-3 text-primary"> View Sellers</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                        `;
-
-                        $('#sellers_div').append(sellerHtml)
-                })
-
-                }
-            });
-        })
-
-
-        $('#fruits').change(function(e){
-                
-                $.ajax({
-                url: `GetSellers.php?filter=${this.value}`,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#sellers_div').empty();
-                data.forEach((seller, i) => {
-
-                        let sellerHtml = `
-
-
-                                    <div class="col-md-6 col-lg-6 col-xl-4">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                <img src="../Seller_Dashboard/${seller.image}" class="img-fluid w-100 rounded-top" alt="">
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${seller.total_rate}</div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4><?php echo $seller_name ?></h4>
-                                                <p>${seller.description.substring(0, 10)}...</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">(${seller.total_rate})</p>
-                                                    <a href="./Seller.php?seller_id=${seller.id}" class="btn border border-secondary rounded-pill px-3 text-primary"> View Sellers</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                        `;
-
-                        $('#sellers_div').append(sellerHtml)
-                })
-
-                }
-        });
-        })
-    </script>
     </body>
 
 </html>

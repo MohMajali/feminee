@@ -157,7 +157,7 @@ statuses.name AS status_name
 from orders
 JOIN users ON users.id = orders.buyer_id
 JOIN statuses ON statuses.id = orders.status_id
-WHERE seller_id = '$S_ID'
+JOIN order_items ON order_items.seller_id = '$S_ID'
 ORDER BY id DESC");
 
                       while ($row1 = mysqli_fetch_array($sql1)) {

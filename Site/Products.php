@@ -2,6 +2,18 @@
     session_start();
 
     include "../Connect.php";
+    $B_ID = $_SESSION['B_ID'];
+
+    if($B_ID) {
+
+        $sql1 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
+        $row1 = mysqli_fetch_array($sql1);
+    
+        $cart_count = $row1['cart_count'];
+    }
+
+    $selected_category_id = $_GET['category_id'];
+
 
 ?>
 
@@ -15,6 +27,8 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
+    <link href="../assets/img/Logo.png" rel="icon" />
+    <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,25 +86,21 @@
                             <a href="index.php" class="nav-item nav-link ">Home</a>
                             <a href="Products.php" class="nav-item nav-link active">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
-                            <a href="shop-detail.php" class="nav-item nav-link">Shop Detail</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                    <a href="cart.php" class="dropdown-item">Cart</a>
-                                    <a href="chackout.php" class="dropdown-item">Chackout</a>
-                                    <a href="testimonial.php" class="dropdown-item">Testimonial</a>
-                                    <a href="404.php" class="dropdown-item">404 Page</a>
-                                </div>
-                            </div>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
+                            <?php if ($B_ID) {?>
+                                <a href="Orders.php" class="nav-item nav-link">Orders</a>
+                            <?php }?>
+                            <?php if (! $B_ID) {?>
+                            <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php }?>
                         </div>
                         <div class="d-flex m-3 me-0">
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="#" class="position-relative me-4 my-auto">
+                            <a href="./Cart.php" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count?></span>
                             </a>
-                            <a href="#" class="my-auto">
+                            <a href="./Profile.php" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                         </div>
@@ -150,10 +160,9 @@
                                 <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                                     <label for="fruits">Default Sorting:</label>
                                     <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
-                                        <option value="volvo">Nothing</option>
-                                        <option value="saab">Popularity</option>
-                                        <option value="opel">Organic</option>
-                                        <option value="audi">Fantastic</option>
+                                        <option value="nothing">Nothing</option>
+                                        <option value="popularity">Popularity</option>
+                                        <option value="price">High price to low</option>
                                     </select>
                                 </div>
                             </div>
@@ -181,7 +190,7 @@
                                                 ?>
                                                 <li>
                                                     <div class="d-flex justify-content-between fruite-name category-link" id="<?php echo $category_id ?>">
-                                                        <a href="./Products.php?category_id=<?php echo $category_id ?>" ><i class="fas fa-apple-alt me-2"></i><?php echo $category_name ?></a>
+                                                        <a href="./Products.php?category_id=<?php echo $category_id ?>" ><?php echo $category_name ?></a>
                                                         <span>(<?php echo $products_count ?>)</span>
                                                     </div>
                                                 </li>
@@ -199,100 +208,51 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="mb-3">
-                                            <h4>Additional</h4>
-                                            <div class="mb-2">
-                                                <input type="radio" class="me-2" id="Categories-1" name="Categories-1" value="Beverages">
-                                                <label for="Categories-1"> Organic</label>
-                                            </div>
-                                            <div class="mb-2">
-                                                <input type="radio" class="me-2" id="Categories-2" name="Categories-1" value="Beverages">
-                                                <label for="Categories-2"> Fresh</label>
-                                            </div>
-                                            <div class="mb-2">
-                                                <input type="radio" class="me-2" id="Categories-3" name="Categories-1" value="Beverages">
-                                                <label for="Categories-3"> Sales</label>
-                                            </div>
-                                            <div class="mb-2">
-                                                <input type="radio" class="me-2" id="Categories-4" name="Categories-1" value="Beverages">
-                                                <label for="Categories-4"> Discount</label>
-                                            </div>
-                                            <div class="mb-2">
-                                                <input type="radio" class="me-2" id="Categories-5" name="Categories-1" value="Beverages">
-                                                <label for="Categories-5"> Expired</label>
-                                            </div>
+                                            <h4>Sub Categories</h4>
+                                            <ul class="list-unstyled fruite-categorie" id="sub_categories_div">
+
+
+
+
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
-                                        <h4 class="mb-3">Featured products</h4>
+                                        <h4 class="mb-3">Top Rated Sellers</h4>
+
+                                        <?php
+                                            $sql1 = mysqli_query($con, "SELECT * from users WHERE active = 1 AND user_type_id = 2 AND total_rate >= 3.5");
+
+                                            while ($row1 = mysqli_fetch_array($sql1)) {
+
+                                                $seller_id         = $row1['id'];
+                                                $seller_name       = $row1['name'];
+                                                $seller_image      = $row1['image'];
+                                                $seller_total_rate = $row1['total_rate'];
+
+                                            ?>
                                         <div class="d-flex align-items-center justify-content-start">
                                             <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                                <img src="img/featur-1.jpg" class="img-fluid rounded" alt="">
+                                                <img src="../Seller_Dashboard/<?php echo $seller_image ?>" class="img-fluid rounded" alt="">
                                             </div>
                                             <div>
-                                                <h6 class="mb-2">Big Banana</h6>
+                                                <a href="./Seller.php?seller_id=<?php echo $seller_id ?>"><h6 class="mb-2"><?php echo $seller_name ?></h6></a>
                                                 <div class="d-flex mb-2">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
+                                                    <?php for ($ii = 1; $ii < $seller_total_rate; $ii++) {?>
+                                                        <i class="fa fa-star text-secondary"></i>
+                                                        <?php }?>
                                                 </div>
                                                 <div class="d-flex mb-2">
-                                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
+                                                    <h5 class="fw-bold me-2"></h5>
+                                                    <h5 class="text-danger text-decoration-line-through"></h5>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-start">
-                                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                                <img src="img/featur-2.jpg" class="img-fluid rounded" alt="">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-2">Big Banana</h6>
-                                                <div class="d-flex mb-2">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                                <div class="d-flex mb-2">
-                                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-start">
-                                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                                <img src="img/featur-3.jpg" class="img-fluid rounded" alt="">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-2">Big Banana</h6>
-                                                <div class="d-flex mb-2">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                                <div class="d-flex mb-2">
-                                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-center my-4">
-                                            <a href="#" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Vew More</a>
-                                        </div>
+<?php }?>
+
+
                                     </div>
-                                    <div class="col-lg-12">
-                                        <div class="position-relative">
-                                            <img src="img/banner-fruits.jpg" class="img-fluid w-100 rounded" alt="">
-                                            <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                                <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                             <div class="col-lg-9">
@@ -325,23 +285,23 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <script>
-            const rangeShowVal = (value) => {
+        const rangeShowVal = (value) => {
 
 
                 document.getElementById('amount').innerHTML = value
 
-                $.ajax({
-        url: `./GetProducts.php?price=${value}`,
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-                
-                      
-            $('#products_div').empty();
+                        $.ajax({
+                        url: `./GetProducts.php?price=${value}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
 
-           data.forEach((product, i) => {
 
-                let productHtml = `
+                            $('#products_div').empty();
+
+                        data.forEach((product, i) => {
+
+                                let productHtml = `
 
 
                                                   <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
@@ -355,7 +315,7 @@
                                                 <p>${product.description.substring(0, 10)}</p>
                                                 <div class="d-flex justify-content-between flex-lg-wrap">
                                                     <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
-                                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                    <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -369,96 +329,211 @@
 
         }
     });
-              
+}
+
+            $('#fruits').change(function(e){
+ 
                 
-            }
+                $.ajax({
+                url: `GetProducts.php?filter=${this.value}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#products_div').empty();
+                data.forEach((product, i) => {
+
+                        let productHtml = `
+
+
+                                                        <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                                <div class="rounded position-relative fruite-item">
+                                                    <div class="fruite-img">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                    </div>
+                                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                        <h4>${product.name}</h4>
+                                                        <p>${product.description.substring(0, 10)}</p>
+                                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                                            <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                                            <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                        `;
+
+                        $('#products_div').append(productHtml)
+                })
+
+                }
+            });
+            })
 
         $(document).ready(function() {
-    $.ajax({
-        url: './GetProducts.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
 
-           data.forEach((product, i) => {
+            let categoryId = <?php echo json_encode($selected_category_id); ?>;
+            
+            const url = categoryId ? `GetProducts.php?category_id=${categoryId}` : 'GetProducts.php'
+            
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#products_div').empty();
+                data.forEach((product, i) => {
 
-                let productHtml = `
+                        let productHtml = `
 
 
-                                                  <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4>${product.name}</h4>
-                                                <p>${product.description.substring(0, 10)}</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
-                                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                        <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                                <div class="rounded position-relative fruite-item">
+                                                    <div class="fruite-img">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                    </div>
+                                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                        <h4>${product.name}</h4>
+                                                        <p>${product.description.substring(0, 10)}</p>
+                                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                                            <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                                            <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
 
 
-                `;
+                        `;
 
-                $('#products_div').append(productHtml)
-           })
+                        $('#products_div').append(productHtml)
+                })
 
-        }
-    });
+                }
+            });
 
-    $('.category-link').click(e => {
-        e.preventDefault();
-        
+            $('.category-link').click(e => {
 
-        $.ajax({
-        url: `./GetProducts.php?category_id=${e.target.href.split('?category_id=')[1]}`,
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-                      
-            $('#products_div').empty();
-
-           data.forEach((product, i) => {
-
-                let productHtml = `
+                e.preventDefault();
 
 
-                                                  <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4>${product.name}</h4>
-                                                <p>${product.description.substring(0, 10)}</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
-                                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                $.ajax({
+                url: `./GetProducts.php?category_id=${e.target.href.split('?category_id=')[1]}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+
+                    $('#products_div').empty();
+
+                data.forEach((product, i) => {
+
+                        let productHtml = `
+
+
+                                                        <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                                <div class="rounded position-relative fruite-item">
+                                                    <div class="fruite-img">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                    </div>
+                                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                        <h4>${product.name}</h4>
+                                                        <p>${product.description.substring(0, 10)}</p>
+                                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                                            <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                                            <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+
+
+                        `;
+
+                        $('#products_div').append(productHtml)
+                })
+
+                }
+            });
+
+
+
+
+            $.ajax({
+                url: `./GetSubCategories.php?category_id=${e.target.href.split('?category_id=')[1]}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+
+                    $('#sub_categories_div').empty();
+
+                data.forEach((category, i) => {
+
+                        let productHtml = `
+
+
+                                                        <li>
+                                                            <div class="d-flex justify-content-between fruite-name sub-category-link" id="sub-${category.id}">
+                                                                <a href="./Products.php?sub_category_id=${category.id}" >${category.name}</a>
+                                                                <span>(${category.count})</span>
+                                                            </div>
+                                                        </li>
+
+
+                        `;
+
+                        $('#sub_categories_div').append(productHtml)
+                })
+
+                }
+            });
+            });
+        });
+
+        $(document).on('click', '.sub-category-link', function(e) {
+            e.preventDefault();
+
+            var href = $(this).find('a').attr('href');
+
+            $.ajax({
+                url: `./GetProducts.php?${href.split('?')[1]}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#products_div').empty();
+
+                    data.forEach((product, i) => {
+                        let productSubHtml = `
+                            <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                <div class="rounded position-relative fruite-item">
+                                    <div class="fruite-img">
+                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                    </div>
+                                    <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                        <h4>${product.name}</h4>
+                                        <p>${product.description.substring(0, 10)}</p>
+                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                            <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                            <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
                                         </div>
                                     </div>
-
-
-                `;
-
-                $('#products_div').append(productHtml)
-           })
-
-        }
+                                </div>
+                            </div>
+                        `;
+                        $('#products_div').append(productSubHtml);
+            });
+            }
+        });
     });
 
 
 
-        
-    })
-});
+
+
     </script>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>

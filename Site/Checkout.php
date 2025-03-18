@@ -1,17 +1,140 @@
+<?php
+    session_start();
+
+    include "../Connect.php";
+
+    $B_ID = $_SESSION['B_ID'];
+
+    if ($B_ID) {
+
+        $sql211 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
+        $row211 = mysqli_fetch_array($sql211);
+
+        $cart_count = $row211['cart_count'];
+
+        if (isset($_POST['Submit'])) {
+
+            $buyer_id = $_POST['B_ID'];
+
+            $cart = [];
+
+            $cartSql = mysqli_query($con, "SELECT * from carts WHERE buyer_id = '$B_ID'");
+
+            $totalPrice = 0;
+
+            while ($cartRow = mysqli_fetch_array($cartSql)) {
+
+                $product_id = $cartRow['product_id'];
+
+                $qty = $cartRow['qty'];
+
+                $productSql = mysqli_query($con, "SELECT seller_id, price from products WHERE id = '$product_id'");
+                $productRow = mysqli_fetch_array($productSql);
+
+                $seller_id = $productRow['seller_id'];
+
+                $price = $productRow['price'];
+
+                $totalPrice += ($price * $qty);
+
+                $cart[] = [
+                    'cart_id'    => $cartRow['id'],
+                    'product_id' => $cartRow['product_id'],
+                    'seller_id'  => $seller_id,
+                    'price'      => $price,
+                    'options'    => $cartRow['options'],
+                    'qty'        => $cartRow['qty'],
+                ];
+
+            }
+
+            foreach ($cart as $item) {
+
+                $cart_id    = $item['cart_id'];
+                $seller_id  = $item['seller_id'];
+                $product_id = $item['product_id'];
+                $options    = $item['options'];
+                $qty        = $item['qty'];
+
+                $stmt = $con->prepare("INSERT INTO orders (buyer_id, seller_id, total_price) VALUES (?, ?, ?) ");
+
+                $stmt->bind_param("iid", $buyer_id, $seller_id, $totalPrice);
+
+                if ($stmt->execute()) {
+
+                    $order_id = $stmt->insert_id;
+
+                    $orderItemStmt = $con->prepare("INSERT INTO order_items (order_id, seller_id, product_id, option_id, quantity) VALUES (?, ?, ?, ?, ?) ");
+
+                    $orderItemStmt->bind_param("iiisi", $order_id, $seller_id, $product_id, $options, $qty);
+
+                    if ($orderItemStmt->execute()) {
+
+                        $productStmt = $con->prepare("SELECT qty AS product_qty FROM products WHERE id = ?");
+                        $productStmt->bind_param("i", $product_id);
+
+                        $productStmt->execute();
+
+                        $productStmt->store_result();
+
+                        if ($productStmt->num_rows > 0) {
+
+                            $productStmt->bind_result($product_qty);
+                            $productStmt->fetch();
+
+                            $newQty = $product_qty - $item['qty'];
+                            $active = $newQty == 0 ? 0 : 1;
+
+                            $updateProductStmt = $con->prepare("UPDATE products SET qty = ?, active = ? WHERE id = ?");
+
+                            $updateProductStmt->bind_param("iii", $newQty, $active, $product_id);
+
+                            if ($updateProductStmt->execute()) {
+
+                                $DeleteFromCartStmt = $con->prepare("DELETE FROM carts WHERE id = ?");
+
+                                $DeleteFromCartStmt->bind_param("i", $cart_id);
+                                $DeleteFromCartStmt->execute();
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            echo "<script language='JavaScript'>
+            alert ('Thank you for dealing with Feminee, Your Order Has Been Placed !');
+       </script>";
+
+            echo "<script language='JavaScript'>
+      document.location='./Orders.php';
+         </script>";
+
+        }
+    }
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="utf-8">
-        <title>Fruitables - Vegetable Website Template</title>
+        <title>Feminee</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="" name="keywords">
         <meta content="" name="description">
 
+        
+    <link href="../assets/img/Logo.png" rel="icon" />
+    <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
+
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet">
 
         <!-- Icon Font Stylesheet -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
@@ -54,34 +177,31 @@
                 </div>
             </div>
             <div class="container px-0">
-                <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Fruitables</h1></a>
+            <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
-                            <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                    <a href="cart.html" class="dropdown-item">Cart</a>
-                                    <a href="chackout.html" class="dropdown-item active">Chackout</a>
-                                    <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                    <a href="404.html" class="dropdown-item">404 Page</a>
-                                </div>
-                            </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="index.php" class="nav-item nav-link ">Home</a>
+                            <a href="Products.php" class="nav-item nav-link">Products</a>
+                            <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
+                            <a href="contact.php" class="nav-item nav-link">Contact</a>
+                            <?php if ($B_ID) {?>
+                                <a href="Orders.php" class="nav-item nav-link">Orders</a>
+                            <?php }?>
+<?php if (! $B_ID) {?>
+                            <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php }?>
                         </div>
                         <div class="d-flex m-3 me-0">
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="#" class="position-relative me-4 my-auto">
+                            <a href="./Cart.php" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;" id="cartCount"><?php echo $cart_count ?></span>
                             </a>
-                            <a href="#" class="my-auto">
+                            <a href="./Profile.php" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
                             </a>
                         </div>
@@ -116,8 +236,7 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Checkout</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
                 <li class="breadcrumb-item active text-white">Checkout</li>
             </ol>
         </div>
@@ -128,65 +247,13 @@
         <div class="container-fluid py-5">
             <div class="container py-5">
                 <h1 class="mb-4">Billing details</h1>
-                <form action="#">
+                <form action="./Checkout.php" method="POST">
+
+
+                <input type="hidden" name="B_ID" value="<?php echo $B_ID ?>" id="">
                     <div class="row g-5">
-                        <div class="col-md-12 col-lg-6 col-xl-7">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">First Name<sup>*</sup></label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 col-lg-6">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">Last Name<sup>*</sup></label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Company Name<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Address <sup>*</sup></label>
-                                <input type="text" class="form-control" placeholder="House Number Street Name">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Town/City<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Country<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
-                                <input type="text" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Mobile<sup>*</sup></label>
-                                <input type="tel" class="form-control">
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Email Address<sup>*</sup></label>
-                                <input type="email" class="form-control">
-                            </div>
-                            <div class="form-check my-3">
-                                <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts">
-                                <label class="form-check-label" for="Account-1">Create an account?</label>
-                            </div>
-                            <hr>
-                            <div class="form-check my-3">
-                                <input class="form-check-input" type="checkbox" id="Address-1" name="Address" value="Address">
-                                <label class="form-check-label" for="Address-1">Ship to a different address?</label>
-                            </div>
-                            <div class="form-item">
-                                <textarea name="text" class="form-control" spellcheck="false" cols="30" rows="11" placeholder="Oreder Notes (Optional)"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-6 col-xl-5">
+
+                        <div class="col-md-12 col-lg-12 col-xl-12">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -199,39 +266,73 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
+
+                                    <?php
+                                        $sql33 = mysqli_query($con, "SELECT * from carts WHERE buyer_id = '$B_ID'");
+
+                                        $totalPrice = 0;
+
+                                        while ($row33 = mysqli_fetch_array($sql33)) {
+
+                                            $cart_id    = $row33['id'];
+                                            $product_id = $row33['product_id'];
+                                            $options    = json_decode($row33['options'], true);
+                                            $color_id   = $options['color_id'];
+                                            $size_id    = $options['size_id'];
+                                            $qty        = $row33['qty'];
+
+                                            $sql55 = mysqli_query($con, "SELECT name, image, price, qty from products WHERE id = '$product_id'");
+                                            $row55 = mysqli_fetch_array($sql55);
+
+                                            $product_name  = $row55['name'];
+                                            $product_image = $row55['image'];
+                                            $product_price = $row55['price'];
+                                            $product_qty   = $row55['qty'];
+
+                                            if ($color_id != '') {
+
+                                                $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
+                                                $row66 = mysqli_fetch_array($sql66);
+
+                                                $color_value = $row66['value'];
+                                            }
+
+                                            if ($size_id != '') {
+
+                                                $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
+                                                $row77 = mysqli_fetch_array($sql77);
+
+                                                $size_value = $row77['value'];
+
+                                            }
+
+                                            $totalPrice += ($product_price * $qty);
+
+                                        ?>
+
+
+
+
                                         <tr>
                                             <th scope="row">
                                                 <div class="d-flex align-items-center mt-2">
-                                                    <img src="img/vegetable-item-2.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                                    <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
                                                 </div>
                                             </th>
-                                            <td class="py-5">Awesome Brocoli</td>
-                                            <td class="py-5">$69.00</td>
-                                            <td class="py-5">2</td>
-                                            <td class="py-5">$138.00</td>
+                                            <td class="py-5"><?php echo $product_name ?></td>
+                                            <td class="py-5"><?php echo $product_price ?> JODs</td>
+                                            <td class="py-5"><?php echo $qty ?></td>
+                                            <td class="py-5"><?php echo $product_price * $qty ?> JODs</td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="img/vegetable-item-5.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Potatoes</td>
-                                            <td class="py-5">$69.00</td>
-                                            <td class="py-5">2</td>
-                                            <td class="py-5">$138.00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="img/vegetable-item-3.png" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Big Banana</td>
-                                            <td class="py-5">$69.00</td>
-                                            <td class="py-5">2</td>
-                                            <td class="py-5">$138.00</td>
-                                        </tr>
+
+
+
+
+
+                                        <?php }?>
+
+
                                         <tr>
                                             <th scope="row">
                                             </th>
@@ -242,31 +343,11 @@
                                             </td>
                                             <td class="py-5">
                                                 <div class="py-3 border-bottom border-top">
-                                                    <p class="mb-0 text-dark">$414.00</p>
+                                                    <p class="mb-0 text-dark"><?php echo $totalPrice ?> JODs</p>
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">
-                                            </th>
-                                            <td class="py-5">
-                                                <p class="mb-0 text-dark py-4">Shipping</p>
-                                            </td>
-                                            <td colspan="3" class="py-5">
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-1" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-1">Free Shipping</label>
-                                                </div>
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-2" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-2">Flat rate: $15.00</label>
-                                                </div>
-                                                <div class="form-check text-start">
-                                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Shipping-3" name="Shipping-1" value="Shipping">
-                                                    <label class="form-check-label" for="Shipping-3">Local Pickup: $8.00</label>
-                                                </div>
-                                            </td>
-                                        </tr>
+
                                         <tr>
                                             <th scope="row">
                                             </th>
@@ -277,7 +358,7 @@
                                             <td class="py-5"></td>
                                             <td class="py-5">
                                                 <div class="py-3 border-bottom border-top">
-                                                    <p class="mb-0 text-dark">$135.00</p>
+                                                    <p class="mb-0 text-dark"><?php echo $totalPrice + 2 ?> JODs</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -293,14 +374,7 @@
                                     <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
                                 </div>
                             </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="Payments">
-                                        <label class="form-check-label" for="Payments-1">Check Payments</label>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                                 <div class="col-12">
                                     <div class="form-check text-start my-3">
@@ -309,16 +383,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                                <div class="col-12">
-                                    <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal" value="Paypal">
-                                        <label class="form-check-label" for="Paypal-1">Paypal</label>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                                <button type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+                                <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" name="Submit">Place Order</button>
                             </div>
                         </div>
                     </div>
@@ -359,7 +426,7 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="footer-item">
                             <h4 class="text-light mb-3">Why People Like us!</h4>
-                            <p class="mb-4">typesetting, remaining essentially unchanged. It was 
+                            <p class="mb-4">typesetting, remaining essentially unchanged. It was
                                 popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.</p>
                             <a href="" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Read More</a>
                         </div>
@@ -422,9 +489,9 @@
 
 
         <!-- Back to Top -->
-        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>   
+        <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
 
-        
+
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

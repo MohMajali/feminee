@@ -148,28 +148,48 @@ if (!$S_ID) {
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT order_items.product_id, order_items.option_id, order_items.quantity,
-products.name AS product_name, products.price AS product_price,
-product_options.name AS option_name, product_options.value AS option_value
+$sql1 = mysqli_query($con, "SELECT order_items.product_id, order_items.option_id, order_items.quantity, order_items.option_id,
+products.name AS product_name, products.price AS product_price
 FROM order_items 
 JOIN products ON products.id = order_items.product_id
-LEFT JOIN product_options ON product_options.id = order_items.option_id
-WHERE order_id = '$order_id'");
+WHERE order_id = '$order_id'
+ORDER BY order_items.id DESC
+");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
     $product_id = $row1['product_id'];
-    $option_id = $row1['option_id'];
+    $options    = json_decode($row1['option_id'], true);
+    $color_id   = $options['color_id'];
+    $size_id    = $options['size_id'];
     $quantity = $row1['quantity'];
     $product_name = $row1['product_name'];
     $product_price = $row1['product_price'];
     $option_name = $row1['option_name'];
     $option_value = $row1['option_value'];
 
+
+    if ($color_id != '') {
+
+      $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
+      $row66 = mysqli_fetch_array($sql66);
+
+      $color_value = $row66['value'];
+  }
+
+  if ($size_id != '') {
+
+      $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
+      $row77 = mysqli_fetch_array($sql77);
+
+      $size_value = $row77['value'];
+
+  }
+
     ?>
                     <tr>
                       <th scope="row"><?php echo $product_name ?></th>
-                      <td><?php echo $option_name ? ($option_name . ' ' . $option_value) : 'N/A' ?></td>
+                      <td><?php echo ($color_value . ' ' . $size_value) ?></td>
                       <td><?php echo $quantity ?></td>
                       <td><?php echo $product_price ?>JODs</td>
                       <td><?php echo $product_price * $quantity ?> JODs</td>

@@ -142,7 +142,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $order_id = $row1['id'];
     $buyer_id = $row1['buyer_id'];
-    $seller_id = $row1['seller_id'];
     $status_id = $row1['status_id'];
     $total_price = $row1['total_price'];
     
@@ -151,16 +150,17 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $buyer_name = $row2['name'];
     
-    $sql2333 = mysqli_query($con, "SELECT * from users WHERE id = '$seller_id'");
-    $row2333 = mysqli_fetch_array($sql2333);
-
-    $seller_name = $row2333['name'];
-
     $sql3 = mysqli_query($con, "SELECT * from order_items WHERE order_id = '$order_id'");
     $row3 = mysqli_fetch_array($sql3);
 
     $product_id = $row3['product_id'];
+    $seller_id = $row3['seller_id'];
     $qty = $row3['quantity'];
+
+    $sql2333 = mysqli_query($con, "SELECT * from users WHERE id = '$seller_id'");
+    $row2333 = mysqli_fetch_array($sql2333);
+
+    $seller_name = $row2333['name'];
 
     $sql4 = mysqli_query($con, "SELECT * from products WHERE id = '$product_id'");
     $row4 = mysqli_fetch_array($sql4);

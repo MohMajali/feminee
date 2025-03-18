@@ -33,7 +33,15 @@ if (isset($_POST['Submit'])) {
             document.location="Seller_Dashboard/";
             </script>';
 
-        }
+        } else if ($type_id == 3) {
+
+          $_SESSION['B_ID'] = $id;
+
+          echo '<script language="JavaScript">
+          document.location="Site/";
+          </script>';
+
+      }
 
     } else {
 
@@ -172,12 +180,12 @@ if (isset($_POST['Submit'])) {
                           <a href="./Seller-Signup.php">Join Us Now!</a>
                         </p>
                       </div>
-                      <!-- <div class="col-12">
+                      <div class="col-12">
                         <p class="small mb-0">
                           New Customer?
                           <a href="./Customer-Signup.php">Become Feminee Customer!</a>
                         </p>
-                      </div> -->
+                      </div>
                       <div class="col-12">
                         <button class="btn btn-primary w-100" type="submit" name="Submit">
                           Login
