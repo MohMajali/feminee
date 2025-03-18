@@ -195,7 +195,7 @@ if (!$A_ID) {
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Title</label
+                      >Description</label
                     >
                     <div class="col-sm-8">
                        <textarea name="description" class="form-control" id=""></textarea>
@@ -246,7 +246,7 @@ if (!$A_ID) {
                     <tr>
                       <th scope="col">ID</th>
                       <th scope="col">Image</th>
-                      <th scope="col">Category Name</th>
+                      <th scope="col">Advertisement Title</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
