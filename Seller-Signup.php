@@ -193,6 +193,7 @@
                           <input
                             type="text"
                             name="phone"
+                            pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers"
                             class="form-control"
                             id="Name"
                             required

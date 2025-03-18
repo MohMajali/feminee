@@ -7,6 +7,7 @@ $products = [];
 
 $category_id     = $_GET['category_id'];
 $sub_category_id = $_GET['sub_category_id'];
+$product_name    = $_GET['product_name'];
 $price           = $_GET['price'];
 $filter          = $_GET['filter'];
 
@@ -47,6 +48,17 @@ if ($category_id) {
     from products
     INNER JOIN categories ON categories.id = products.category_id
     WHERE products.active = 1 AND products.category_id = '$category_id'";
+
+}
+
+if ($product_name) {
+
+    $sql = "SELECT products.id, products.name, products.price, products.description, products.image,
+    categories.name AS category_name
+
+    from products
+    INNER JOIN categories ON categories.id = products.category_id
+    WHERE products.active = 1 AND products.name LIKE '%$product_name%'";
 
 }
 

@@ -2,18 +2,18 @@
     session_start();
 
     include "../Connect.php";
-    $B_ID = $_SESSION['B_ID'];
+    $B_ID         = $_SESSION['B_ID'];
+    $product_name = $_POST['product_name'];
 
-    if($B_ID) {
+    if ($B_ID) {
 
         $sql1 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
         $row1 = mysqli_fetch_array($sql1);
-    
+
         $cart_count = $row1['cart_count'];
     }
 
     $selected_category_id = $_GET['category_id'];
-
 
 ?>
 
@@ -90,7 +90,7 @@
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
-                            <?php if (! $B_ID) {?>
+<?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
                             <?php }?>
                         </div>
@@ -98,7 +98,7 @@
                             <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                             <a href="./Cart.php" class="position-relative me-4 my-auto">
                                 <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count?></span>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
                             </a>
                             <a href="./Profile.php" class="my-auto">
                                 <i class="fas fa-user fa-2x"></i>
@@ -121,8 +121,10 @@
                     </div>
                     <div class="modal-body d-flex align-items-center">
                         <div class="input-group w-75 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                            <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                            <form class="w-75 mx-auto d-flex" action="./Products.php" method="POST">
+                                <input type="search" class="form-control p-3" name="product_name" placeholder="product name" aria-describedby="search-icon-1">
+                                <button type="submit" id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -332,8 +334,8 @@
 }
 
             $('#fruits').change(function(e){
- 
-                
+
+
                 $.ajax({
                 url: `GetProducts.php?filter=${this.value}`,
                 type: 'GET',
@@ -374,10 +376,20 @@
 
         $(document).ready(function() {
 
-            let categoryId = <?php echo json_encode($selected_category_id); ?>;
+            let categoryId =                                                         <?php echo json_encode($selected_category_id); ?>;
+            let productName =                              <?php echo json_encode($product_name); ?>;
             
-            const url = categoryId ? `GetProducts.php?category_id=${categoryId}` : 'GetProducts.php'
-            
+
+            let url = 'GetProducts.php'
+
+            if(categoryId) {
+
+                url = `GetProducts.php?category_id=${categoryId}`
+            } else if(productName) {
+                url = `GetProducts.php?product_name=${productName}`
+            }
+          
+
             $.ajax({
                 url: url,
                 type: 'GET',

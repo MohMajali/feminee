@@ -39,6 +39,12 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Advertisements.php">
+        <i class="bi bi-badge-ad"></i><span>Advertisements</span>
+      </a>
+    </li>
+
 
 
   </ul>
