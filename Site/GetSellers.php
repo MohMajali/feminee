@@ -17,18 +17,16 @@ if ($filter === 'popularity') {
     $sql = "SELECT * from users WHERE active = 1 AND user_type_id = 2 ORDER BY total_rate DESC";
 }
 
-
-
 $sql1 = mysqli_query($con, $sql);
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
     $sellers[] = [
-        'id'            => $row1['id'],
-        'name'          => $row1['name'],
-        'total_rate'         => $row1['total_rate'],
-        'description'   => $row1['description'],
-        'image'         => $row1['image'],
+        'id'          => $row1['id'],
+        'name'        => $row1['name'],
+        'total_rate'  => $row1['total_rate'],
+        'description' => $row1['description'],
+        'image'       => $row1['image'],
     ];
 }
 

@@ -5,6 +5,7 @@ include "../Connect.php";
 
 $S_ID = $_SESSION['S_Log'];
 $order_id = $_GET['order_id'];
+$offer_id = $_GET['offer_id'];
 
 if (!$S_ID) {
 
@@ -148,10 +149,11 @@ if (!$S_ID) {
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT order_items.product_id, order_items.option_id, order_items.quantity, order_items.option_id,
+$sql1 = mysqli_query($con, "SELECT order_items.product_id, order_items.option_id, order_items.quantity, order_items.option_id, orders.total_price,
 products.name AS product_name, products.price AS product_price
 FROM order_items 
 JOIN products ON products.id = order_items.product_id
+JOIN orders ON orders.id = order_items.order_id
 WHERE order_id = '$order_id'
 ORDER BY order_items.id DESC
 ");
@@ -167,6 +169,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $product_price = $row1['product_price'];
     $option_name = $row1['option_name'];
     $option_value = $row1['option_value'];
+    $total_price = $row1['total_price'];
 
 
     if ($color_id != '') {
@@ -192,7 +195,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <td><?php echo ($color_value . ' ' . $size_value) ?></td>
                       <td><?php echo $quantity ?></td>
                       <td><?php echo $product_price ?>JODs</td>
-                      <td><?php echo $product_price * $quantity ?> JODs</td>
+                      <td><?php echo $offer_id ? $total_price: ($product_price * $quantity) ?> JODs</td>
                     </tr>
 <?php
 }?>

@@ -33,6 +33,12 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Offers.php">
+        <i class="bi bi-percent"></i><span>Offers</span>
+      </a>
+    </li>
+
 
 
   </ul>

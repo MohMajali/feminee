@@ -3,6 +3,16 @@
 
     include "../Connect.php";
 
+    $B_ID = $_SESSION['B_ID'];
+
+    if ($B_ID) {
+
+        $sql1 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
+        $row1 = mysqli_fetch_array($sql1);
+
+        $cart_count = $row1['cart_count'];
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -65,37 +75,39 @@
                 </div>
             </div>
             <div class="container px-0">
-                <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Fruitables</h1></a>
+            <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
-                            <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                                    <a href="cart.html" class="dropdown-item">Cart</a>
-                                    <a href="chackout.html" class="dropdown-item">Chackout</a>
-                                    <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                                    <a href="404.html" class="dropdown-item">404 Page</a>
-                                </div>
-                            </div>
-                            <a href="contact.html" class="nav-item nav-link active">Contact</a>
+                            <a href="index.php" class="nav-item nav-link ">Home</a>
+                            <a href="Products.php" class="nav-item nav-link">Products</a>
+                            <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
+                            <a href="Offers.php" class="nav-item nav-link">Offers</a>
+                            <a href="contact.php" class="nav-item nav-link">Contact</a>
+                            <?php if ($B_ID) {?>
+                                <a href="Orders.php" class="nav-item nav-link">Orders</a>
+                            <?php }?>
+<?php if (! $B_ID) {?>
+                            <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php }?>
                         </div>
-                        <div class="d-flex m-3 me-0">
-                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="#" class="position-relative me-4 my-auto">
-                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
-                            </a>
-                            <a href="#" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a>
-                        </div>
+                        <?php if ($B_ID) {?>
+
+<div class="d-flex m-3 me-0">
+    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+    <a href="./Cart.php" class="position-relative me-4 my-auto">
+        <i class="fa fa-shopping-bag fa-2x"></i>
+        <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
+    </a>
+    <a href="./Profile.php" class="my-auto">
+        <i class="fas fa-user fa-2x"></i>
+    </a>
+</div>
+
+<?php }?>
                     </div>
                 </nav>
             </div>

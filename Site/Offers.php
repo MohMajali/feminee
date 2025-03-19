@@ -2,7 +2,6 @@
     session_start();
 
     include "../Connect.php";
-
     $B_ID = $_SESSION['B_ID'];
 
     if ($B_ID) {
@@ -11,41 +10,9 @@
         $row1 = mysqli_fetch_array($sql1);
 
         $cart_count = $row1['cart_count'];
-
-        $sql2 = mysqli_query($con, "SELECT * FROM users WHERE id = '$B_ID'");
-        $row2 = mysqli_fetch_array($sql2);
-
-        $name     = $row2['name'];
-        $email    = $row2['email'];
-        $phone    = $row2['phone'];
-        $password = $row2['password'];
-
-        if (isset($_POST['Submit'])) {
-
-            $B_ID     = $_POST['B_ID'];
-            $name     = $_POST['name'];
-            $phone    = $_POST['phone'];
-            $email    = $_POST['email'];
-            $password = $_POST['password'];
-
-            $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
-            $stmt->bind_param("ssssi", $name, $password, $phone, $email, $B_ID);
-
-            if ($stmt->execute()) {
-
-                echo "<script language='JavaScript'>
-                alert ('Account Updated Successfully !');
-           </script>";
-
-                echo "<script language='JavaScript'>
-          document.location='./Profile.php';
-             </script>";
-            }
-        }
     }
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -113,10 +80,10 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="index.php" class="nav-item nav-link active">Home</a>
+                            <a href="index.php" class="nav-item nav-link ">Home</a>
                             <a href="Products.php" class="nav-item nav-link">Products</a>
-                            <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
-                            <a href="Offers.php" class="nav-item nav-link">Offers</a>
+                            <a href="Sellers.php" class="nav-item nav-link ">Sellers</a>
+                            <a href="Offers.php" class="nav-item nav-link active">Offers</a>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
@@ -125,20 +92,21 @@
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
                             <?php }?>
                         </div>
-                        <?php if ($B_ID) {?>
+<?php if ($B_ID) {?>
 
-<div class="d-flex m-3 me-0">
-    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-    <a href="./Cart.php" class="position-relative me-4 my-auto">
-        <i class="fa fa-shopping-bag fa-2x"></i>
-        <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
-    </a>
-    <a href="./Profile.php" class="my-auto">
-        <i class="fas fa-user fa-2x"></i>
-    </a>
-</div>
+                        <div class="d-flex m-3 me-0">
+                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+                            <a href="./Cart.php" class="position-relative me-4 my-auto">
+                                <i class="fa fa-shopping-bag fa-2x"></i>
+                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
+                            </a>
+                            <a href="./Profile.php" class="my-auto">
+                                <i class="fas fa-user fa-2x"></i>
+                            </a>
+                        </div>
 
-<?php }?>
+                        <?php }?>
+
                     </div>
                 </nav>
             </div>
@@ -170,64 +138,90 @@
 
         <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">Profile</h1>
+            <h1 class="text-center text-white display-6">Offers</h1>
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Profile</li>
+                <li class="breadcrumb-item"><a href="./Offers.php">Offers</a></li>
             </ol>
         </div>
         <!-- Single Page Header End -->
 
 
-        <!-- Checkout Page Start -->
-        <div class="container-fluid py-5">
+        <!-- Fruits Shop Start-->
+        <div class="container-fluid fruite py-5">
             <div class="container py-5">
-                <h1 class="mb-4">Account Info</h1>
-                <form action="./Profile.php" method="POST">
-                    <input type="hidden" name="B_ID" value="<?php echo $B_ID ?>">
-                    <div class="row g-5">
-                        <div class="col-md-12 col-lg-12 col-xl-12">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-12">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">Full Name<sup>*</sup></label>
-                                        <input type="text" name="name" class="form-control" value="<?php echo $name ?>" required>
-                                    </div>
-                                </div>
+                <h1 class="mb-4">Feminee Offers</h1>
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <div class="row g-4">
+                            <div class="col-xl-3">
 
                             </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Email<sup>*</sup></label>
-                                <input type="email" name="email" class="form-control" value="<?php echo $email ?>" required>
+                            <div class="col-6"></div>
+                            <div class="col-xl-3">
+
                             </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Phone <sup>*</sup></label>
-                                <input type="text" name="phone" pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers" class="form-control" value="<?php echo $phone ?>" required>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Password<sup>*</sup></label>
-                                <input type="text" name="password" class="form-control" value="<?php echo $password ?>" required>
-                            </div>
-
-                    <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-
-                        <button class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" type="submit" name="Submit">Save</button>
-                    </div>
-
-
                         </div>
+                        <div class="row g-4">
 
+                            <div class="col-lg-12">
+                                <div class="row g-4 justify-content-center" id="offers_div">
+
+                                <?php
+                                    $sql1 = mysqli_query($con, "SELECT * from offers WHERE active = 1");
+
+                                    while ($row1 = mysqli_fetch_array($sql1)) {
+
+                                        $offer_id          = $row1['id'];
+                                        $offer_title       = $row1['title'];
+                                        $offer_description = $row1['description'];
+                                        $product_id        = $row1['product_id'];
+                                        $price             = $row1['price'];
+                                        $active            = $row1['active'];
+                                        $created_at        = $row1['created_at'];
+
+                                        $sql2 = mysqli_query($con, "SELECT * from products WHERE id = '$product_id'");
+                                        $row2 = mysqli_fetch_array($sql2);
+
+                                        $product_name  = $row2['name'];
+                                        $product_image = $row2['image'];
+
+                                    ?>
+
+
+                                <div class="col-md-6 col-lg-6 col-xl-4">
+                                        <div class="rounded position-relative fruite-item">
+                                            <div class="fruite-img">
+                                                <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
+                                            </div>
+                                            <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;"><?php echo $seller_name ?> JODs</div>
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                <h4><?php echo $product_name ?></h4>
+                                                <p><?php echo $offer_description ?></p>
+                                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                                    <p class="text-dark fs-5 fw-bold mb-0">(<?php echo $seller_name ?> JODs)</p>
+                                                    <a href="./Offer.php?offer_id=<?php echo $offer_id ?>" class="btn border border-secondary rounded-pill px-3 text-primary"> View Offer</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+<?php }?>
+
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-        <!-- Checkout Page End -->
+        <!-- Fruits Shop End-->
 
 
         <!-- Footer Start -->
-        <?php require './Footer.php'?>
+            <?php require './Footer.php'?>
         <!-- Footer End -->
-
 
 
 

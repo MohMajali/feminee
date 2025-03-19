@@ -1,23 +1,23 @@
 <?php
-session_start();
+    session_start();
 
-include "../Connect.php";
+    include "../Connect.php";
 
-$A_ID = $_SESSION['A_Log'];
+    $A_ID = $_SESSION['A_Log'];
 
-if (!$A_ID) {
+    if (! $A_ID) {
 
-    echo '<script language="JavaScript">
+        echo '<script language="JavaScript">
      document.location="../Login.php";
     </script>';
 
-} else {
+    } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
-    $row1 = mysqli_fetch_array($sql1);
+        $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
+        $row1 = mysqli_fetch_array($sql1);
 
-    $name = $row1['name'];
-}
+        $name = $row1['name'];
+    }
 ?>
 
 
@@ -126,6 +126,7 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
+                      <th scope="col">Offer</th>
                       <th scope="col">Client Name</th>
                       <th scope="col">Seller Name</th>
                       <th scope="col">Item Name</th>
@@ -136,47 +137,55 @@ if (!$A_ID) {
                   </thead>
                   <tbody>
 <?php
-$sql1 = mysqli_query($con, "SELECT * from orders ORDER BY id DESC");
+    $sql1 = mysqli_query($con, "SELECT * from orders ORDER BY id DESC");
 
-while ($row1 = mysqli_fetch_array($sql1)) {
+    while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $order_id = $row1['id'];
-    $buyer_id = $row1['buyer_id'];
-    $status_id = $row1['status_id'];
-    $total_price = $row1['total_price'];
-    
-    $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$buyer_id'");
-    $row2 = mysqli_fetch_array($sql2);
+        $order_id    = $row1['id'];
+        $buyer_id    = $row1['buyer_id'];
+        $offer_id    = $row1['offer_id'];
+        $status_id   = $row1['status_id'];
+        $total_price = $row1['total_price'];
 
-    $buyer_name = $row2['name'];
-    
-    $sql3 = mysqli_query($con, "SELECT * from order_items WHERE order_id = '$order_id'");
-    $row3 = mysqli_fetch_array($sql3);
+        $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$buyer_id'");
+        $row2 = mysqli_fetch_array($sql2);
 
-    $product_id = $row3['product_id'];
-    $seller_id = $row3['seller_id'];
-    $qty = $row3['quantity'];
+        $buyer_name = $row2['name'];
 
-    $sql2333 = mysqli_query($con, "SELECT * from users WHERE id = '$seller_id'");
-    $row2333 = mysqli_fetch_array($sql2333);
+        $sql3 = mysqli_query($con, "SELECT * from order_items WHERE order_id = '$order_id'");
+        $row3 = mysqli_fetch_array($sql3);
 
-    $seller_name = $row2333['name'];
+        $product_id = $row3['product_id'];
+        $seller_id  = $row3['seller_id'];
+        $qty        = $row3['quantity'];
 
-    $sql4 = mysqli_query($con, "SELECT * from products WHERE id = '$product_id'");
-    $row4 = mysqli_fetch_array($sql4);
+        $sql2333 = mysqli_query($con, "SELECT * from users WHERE id = '$seller_id'");
+        $row2333 = mysqli_fetch_array($sql2333);
 
-    $item_name = $row4['name'];
-    $price = $row4['price'];
+        $seller_name = $row2333['name'];
+
+        $sql4 = mysqli_query($con, "SELECT * from products WHERE id = '$product_id'");
+        $row4 = mysqli_fetch_array($sql4);
+
+        $item_name = $row4['name'];
+        $price     = $row4['price'];
+
+        $sql2555 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
+        $row2555 = mysqli_fetch_array($sql2555);
+
+        $offer_title = $row2555['title'];
+        $offer_price = $row2555['price'];
 
     ?>
                     <tr>
                       <th scope="row"><?php echo $order_id ?></th>
+                      <th scope="row"><?php echo $offer_title ?? 'N/A' ?></th>
                       <td><?php echo $buyer_name ?></td>
                       <td><?php echo $seller_name ?></td>
                       <td><?php echo $item_name ?></td>
                       <td><?php echo $price ?></td>
                       <td><?php echo $qty ?></td>
-                      <td><?php echo $price * $qty ?> JDs</td>
+                      <td><?php echo $offer_id ? $offer_price : ($price * $qty) ?> JODs</td>
                     </tr>
 <?php
 }?>

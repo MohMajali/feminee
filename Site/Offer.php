@@ -3,49 +3,76 @@
 
     include "../Connect.php";
 
-    $B_ID = $_SESSION['B_ID'];
+    $offer_id = $_GET['offer_id'];
+    $B_ID     = $_SESSION['B_ID'];
 
     if ($B_ID) {
 
-        $sql1 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
-        $row1 = mysqli_fetch_array($sql1);
+        $sql322 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
+        $row322 = mysqli_fetch_array($sql322);
 
-        $cart_count = $row1['cart_count'];
+        $cart_count = $row322['cart_count'];
+    }
 
-        $sql2 = mysqli_query($con, "SELECT * FROM users WHERE id = '$B_ID'");
+    $sql2 = mysqli_query($con, "select * from offers where id='$offer_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $seller_id   = $row2['seller_id'];
+    $product_id  = $row2['product_id'];
+    $title       = $row2['title'];
+    $description = $row2['description'];
+    $price       = $row2['price'];
+
+    $sql3 = mysqli_query($con, "select * from users where id='$seller_id'");
+    $row3 = mysqli_fetch_array($sql3);
+
+    $seller_name = $row3['name'];
+
+    $sql4 = mysqli_query($con, "select * from products where id='$product_id'");
+    $row4 = mysqli_fetch_array($sql4);
+
+    $product_name  = $row4['name'];
+    $product_image = $row4['image'];
+
+    if (isset($_POST['Submit'])) {
+
+        $offer_id = $_POST['offer_id'];
+        $B_ID     = $_POST['B_ID'];
+
+        $sql2 = mysqli_query($con, "select * from offers where id='$offer_id'");
         $row2 = mysqli_fetch_array($sql2);
 
-        $name     = $row2['name'];
-        $email    = $row2['email'];
-        $phone    = $row2['phone'];
-        $password = $row2['password'];
+        $seller_id  = $row2['seller_id'];
+        $product_id = $row2['product_id'];
+        $price      = $row2['price'];
 
-        if (isset($_POST['Submit'])) {
+        $stmt = $con->prepare("INSERT INTO orders (buyer_id, offer_id, total_price) VALUES (?, ?, ?) ");
 
-            $B_ID     = $_POST['B_ID'];
-            $name     = $_POST['name'];
-            $phone    = $_POST['phone'];
-            $email    = $_POST['email'];
-            $password = $_POST['password'];
+        $stmt->bind_param("iid", $B_ID, $offer_id, $price);
 
-            $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
-            $stmt->bind_param("ssssi", $name, $password, $phone, $email, $B_ID);
+        if ($stmt->execute()) {
 
-            if ($stmt->execute()) {
+            $order_id = $stmt->insert_id;
 
-                echo "<script language='JavaScript'>
-                alert ('Account Updated Successfully !');
+            $orderItemsStmt = $con->prepare("INSERT INTO order_items (order_id, seller_id, product_id) VALUES (?, ?, ?) ");
+
+            $orderItemsStmt->bind_param("iii", $order_id, $seller_id, $product_id);
+
+            $orderItemsStmt->execute();
+
+            echo "<script language='JavaScript'>
+              alert ('Thank you !');
+         </script>";
+
+            echo "<script language='JavaScript'>
+        document.location='./Orders.php';
            </script>";
 
-                echo "<script language='JavaScript'>
-          document.location='./Profile.php';
-             </script>";
-            }
         }
+
     }
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -116,7 +143,7 @@
                             <a href="index.php" class="nav-item nav-link active">Home</a>
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
-                            <a href="Offers.php" class="nav-item nav-link">Offers</a>
+                            <a href="Offers.php" class="nav-item nav-link active">Offers</a>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
@@ -170,64 +197,80 @@
 
         <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">Profile</h1>
+            <h1 class="text-center text-white display-6"><?php echo $title ?> Detail</h1>
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Profile</li>
+                <li class="breadcrumb-item"><a href="./Offers.php">Offers</a></li>
+                <li class="breadcrumb-item active text-white"><?php echo $title ?> Detail</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
 
 
-        <!-- Checkout Page Start -->
-        <div class="container-fluid py-5">
+        <!-- Single Product Start -->
+        <div class="container-fluid py-5 mt-5">
             <div class="container py-5">
-                <h1 class="mb-4">Account Info</h1>
-                <form action="./Profile.php" method="POST">
-                    <input type="hidden" name="B_ID" value="<?php echo $B_ID ?>">
-                    <div class="row g-5">
-                        <div class="col-md-12 col-lg-12 col-xl-12">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-12">
-                                    <div class="form-item w-100">
-                                        <label class="form-label my-3">Full Name<sup>*</sup></label>
-                                        <input type="text" name="name" class="form-control" value="<?php echo $name ?>" required>
-                                    </div>
+                <div class="row g-4 mb-5">
+                    <div class="col-lg-8 col-xl-9">
+                        <div class="row g-4">
+                            <div class="col-lg-6">
+                                <div class="border rounded">
+                                        <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid rounded" alt="Image" style="width: 100%;">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <h4 class="fw-bold mb-3"><?php echo $product_name ?></h4>
+                                <p class="mb-3"><?php echo $description ?></p><?php echo $sellerPhone ?></p>
+                                <h5 class="fw-bold mb-3">Price :                                                                                                                                                                                                 <?php echo $price ?> JODs</h5>
+                                <div class="d-flex mb-4">
+
+                                    <form action="./Offer.php?offer_id=<?php echo $offer_id ?>" method="POST">
+                                        <input type="hidden" name="B_ID" value="<?php echo $B_ID ?>">
+                                        <input type="hidden" name="offer_id" value="<?php echo $offer_id ?>">
+                                        <button type="submit" name="Submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Purchase Offer</button>
+                                    </form>
                                 </div>
 
                             </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Email<sup>*</sup></label>
-                                <input type="email" name="email" class="form-control" value="<?php echo $email ?>" required>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Phone <sup>*</sup></label>
-                                <input type="text" name="phone" pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers" class="form-control" value="<?php echo $phone ?>" required>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Password<sup>*</sup></label>
-                                <input type="text" name="password" class="form-control" value="<?php echo $password ?>" required>
-                            </div>
+                            <div class="col-lg-12">
+                                <nav>
+                                    <div class="nav nav-tabs mb-3">
+                                        <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Description</button>
 
-                    <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                                        <!-- <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                            aria-controls="nav-mission" aria-selected="false">Reviews</button> -->
+                                    </div>
+                                </nav>
+                                <div class="tab-content mb-5">
+                                    <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                        <p><?php echo $description ?> </p>
 
-                        <button class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" type="submit" name="Submit">Save</button>
-                    </div>
+                                    </div>
+                                    <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
 
+
+
+                                    </div>
+
+                                </div>
+                            </div>
 
                         </div>
-
                     </div>
-                </form>
+
+                </div>
+
             </div>
         </div>
-        <!-- Checkout Page End -->
+        <!-- Single Product End -->
 
 
         <!-- Footer Start -->
-        <?php require './Footer.php'?>
+                <?php require './Footer.php'?>
         <!-- Footer End -->
-
 
 
 

@@ -86,6 +86,7 @@
                             <a href="index.php" class="nav-item nav-link active">Home</a>
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
+                            <a href="Offers.php" class="nav-item nav-link">Offers</a>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
@@ -94,16 +95,20 @@
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
                             <?php }?>
                         </div>
-                        <div class="d-flex m-3 me-0">
-                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="./Cart.php" class="position-relative me-4 my-auto">
-                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
-                            </a>
-                            <a href="./Profile.php" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a>
-                        </div>
+                        <?php if ($B_ID) {?>
+
+<div class="d-flex m-3 me-0">
+    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+    <a href="./Cart.php" class="position-relative me-4 my-auto">
+        <i class="fa fa-shopping-bag fa-2x"></i>
+        <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
+    </a>
+    <a href="./Profile.php" class="my-auto">
+        <i class="fas fa-user fa-2x"></i>
+    </a>
+</div>
+
+<?php }?>
                     </div>
                 </nav>
             </div>
@@ -138,7 +143,7 @@
             <div class="container py-5">
                 <div class="row g-5 align-items-center">
                     <div class="col-md-12 col-lg-7">
-                        <h4 class="mb-3 text-secondary">XXXX XXXX XXXX</h4>
+                        <h4 class="mb-3 secondry-text">XXXX XXXX XXXX</h4>
                         <h1 class="mb-5 display-3 text-primary">XXXX XXXX XXXX</h1>
                         <div class="position-relative mx-auto">
                             <!-- <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number" placeholder="Search">
@@ -189,7 +194,7 @@
 
                     <div class="col-md-6 col-lg-4">
                         <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                            <div class="featurs-icon btn-square rounded-circle background-sec mb-5 mx-auto">
                                 <i class="fas fa-user-shield fa-3x text-white"></i>
                             </div>
                             <div class="featurs-content text-center">
@@ -200,7 +205,7 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                            <div class="featurs-icon btn-square rounded-circle background-sec mb-5 mx-auto">
                                 <i class="fas fa-exchange-alt fa-3x text-white"></i>
                             </div>
                             <div class="featurs-content text-center">
@@ -211,7 +216,7 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="featurs-item text-center rounded bg-light p-4">
-                            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+                            <div class="featurs-icon btn-square rounded-circle background-sec mb-5 mx-auto">
                                 <i class="fa fa-phone-alt fa-3x text-white"></i>
                             </div>
                             <div class="featurs-content text-center">
@@ -297,7 +302,7 @@
                                                 <div class="fruite-img">
                                                     <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
-                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;"><?php echo $categoryName ?></div>
+                                                <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;"><?php echo $categoryName ?></div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                     <h4><?php echo $product_name ?></h4>
                                                     <p><?php echo substr($product_description, 0, 10) . '.....' ?></p>
@@ -384,53 +389,7 @@
         <!-- Fruits Shop End-->
 
 
-        <!-- Featurs Start -->
-        <div class="container-fluid service py-5">
-            <div class="container py-5">
-                <div class="row g-4 justify-content-center">
-                    <div class="col-md-6 col-lg-4">
-                        <a href="#">
-                            <div class="service-item bg-secondary rounded border border-secondary">
-                                <img src="img/featur-1.jpg" class="img-fluid rounded-top w-100" alt="">
-                                <div class="px-4 rounded-bottom">
-                                    <div class="service-content bg-primary text-center p-4 rounded">
-                                        <h5 class="text-white">Fresh Apples</h5>
-                                        <h3 class="mb-0">20% OFF</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <a href="#">
-                            <div class="service-item bg-dark rounded border border-dark">
-                                <img src="img/featur-2.jpg" class="img-fluid rounded-top w-100" alt="">
-                                <div class="px-4 rounded-bottom">
-                                    <div class="service-content bg-light text-center p-4 rounded">
-                                        <h5 class="text-primary">Tasty Fruits</h5>
-                                        <h3 class="mb-0">Free delivery</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <a href="#">
-                            <div class="service-item bg-primary rounded border border-primary">
-                                <img src="img/featur-3.jpg" class="img-fluid rounded-top w-100" alt="">
-                                <div class="px-4 rounded-bottom">
-                                    <div class="service-content bg-secondary text-center p-4 rounded">
-                                        <h5 class="text-white">Exotic Vegitable</h5>
-                                        <h3 class="mb-0">Discount 30$</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Featurs End -->
+   
 
 
         <!-- Vesitable Shop Start-->
@@ -572,28 +531,28 @@
                     <div class="row g-4 justify-content-center">
                         <div class="col-md-6 col-lg-6 col-xl-3">
                             <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
+                                <i class="fa fa-users secondry-text"></i>
                                 <h4>satisfied customers</h4>
                                 <h1>1963</h1>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 col-xl-3">
                             <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
+                                <i class="fa fa-users secondry-text"></i>
                                 <h4>quality of service</h4>
                                 <h1>99%</h1>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 col-xl-3">
                             <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
+                                <i class="fa fa-users secondry-text"></i>
                                 <h4>quality certificates</h4>
                                 <h1>33</h1>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-6 col-xl-3">
                             <div class="counter bg-white rounded p-5">
-                                <i class="fa fa-users text-secondary"></i>
+                                <i class="fa fa-users secondry-text"></i>
                                 <h4>Available Products</h4>
                                 <h1>789</h1>
                             </div>

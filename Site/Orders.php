@@ -84,6 +84,7 @@
                             <a href="index.php" class="nav-item nav-link ">Home</a>
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
+                            <a href="Offers.php" class="nav-item nav-link">Offers</a>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link active">Orders</a>
@@ -92,16 +93,20 @@
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
                             <?php }?>
                         </div>
-                        <div class="d-flex m-3 me-0">
-                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="./Cart.php" class="position-relative me-4 my-auto">
-                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;" id="cartCount"><?php echo $cart_count ?></span>
-                            </a>
-                            <a href="./Profile.php" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a>
-                        </div>
+                        <?php if ($B_ID) {?>
+
+<div class="d-flex m-3 me-0">
+    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+    <a href="./Cart.php" class="position-relative me-4 my-auto">
+        <i class="fa fa-shopping-bag fa-2x"></i>
+        <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
+    </a>
+    <a href="./Profile.php" class="my-auto">
+        <i class="fas fa-user fa-2x"></i>
+    </a>
+</div>
+
+<?php }?>
                     </div>
                 </nav>
             </div>
@@ -151,6 +156,7 @@
                           <tr>
                             <th scope="col">Products</th>
                             <th scope="col">Seller Name</th>
+                            <th scope="col">Offer</th>
                             <th scope="col">Product Name</th>
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
@@ -170,18 +176,18 @@
                             while ($row33 = mysqli_fetch_array($sql33)) {
 
                                 $order_id    = $row33['id'];
+                                $offer_id    = $row33['offer_id'];
                                 $status_id   = $row33['status_id'];
                                 $total_price = $row33['total_price'];
-
 
                                 $sql55 = mysqli_query($con, "SELECT product_id, seller_id, option_id, quantity from order_items WHERE order_id = '$order_id'");
                                 $row55 = mysqli_fetch_array($sql55);
 
                                 $product_id = $row55['product_id'];
                                 $seller_id  = $row55['seller_id'];
-                                $options     = json_decode($row55['option_id'], true);
-                                $color_id    = $options['color_id'];
-                                $size_id     = $options['size_id'];
+                                $options    = json_decode($row55['option_id'], true);
+                                $color_id   = $options['color_id'];
+                                $size_id    = $options['size_id'];
                                 $quantity   = $row55['quantity'];
 
                                 $sql66 = mysqli_query($con, "SELECT name AS product_name, image AS product_image, price AS product_price from products WHERE id = '$product_id'");
@@ -200,6 +206,11 @@
                                 $row88 = mysqli_fetch_array($sql88);
 
                                 $status_name = $row88['status_name'];
+
+                                $sql99 = mysqli_query($con, "SELECT title from offers WHERE id = '$offer_id'");
+                                $row99 = mysqli_fetch_array($sql99);
+
+                                $offer_title = $row99['title'];
 
                                 if ($color_id != '') {
 
@@ -232,6 +243,9 @@
                                     <p class="mb-0 mt-4"><?php echo $seller_name ?></p>
                                 </td>
                                 <td>
+                                    <p class="mb-0 mt-4"><?php echo $offer_title ?></p>
+                                </td>
+                                <td>
                                     <p class="mb-0 mt-4"><?php echo $product_name ?></p>
                                 </td>
                                 <td>
@@ -244,7 +258,7 @@
                                 <p class="mb-0 mt-4"><?php echo $color_value . ' ' . $size_value ?></p>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4"><?php echo $product_price * $quantity ?> JODs</p>
+                                    <p class="mb-0 mt-4"><?php echo $offer_id ? $total_price : ($product_price * $quantity) ?> JODs</p>
                                 </td>
                                 <td>
                                     <p class="mb-0 mt-4"><?php echo $status_name ?></p>
@@ -252,15 +266,15 @@
                                 <td>
 
 
-                                <?php if($status_id == 1) { ?>
-                                    
+                                <?php if ($status_id == 1) {?>
+
                                     <a href="./CancelOrder.php?order_id=<?php echo $order_id ?>" class="btn btn-md rounded-circle bg-light border mt-4 delete-btn" >
                                         <i class="fa fa-times text-danger"></i>
                                     </a>
-                                    <?php } else if ($status_id == 2) { ?>
-                                        <p>rating</p>
+                                    <?php } else if ($status_id == 3) {?>
+                                        <a href="./Rate-Form.php?seller_id=<?php echo $seller_id ?>&product_id=<?php echo $product_id ?>" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Rate</a>
                                     </a>
-                                    <?php } ?>
+                                    <?php }?>
 
 
 
@@ -274,7 +288,7 @@
                         </tbody>
                     </table>
                 </div>
-    
+
 
             </div>
         </div>

@@ -13,19 +13,22 @@
 
     } else {
 
-        $sql1 = mysqli_query($con, "select * from users where id='$S_ID'");
+        $sql1 = mysqli_query($con, "SELECT * FROM users WHERE id='$S_ID'");
         $row1 = mysqli_fetch_array($sql1);
 
         $name  = $row1['name'];
-        $email = $row1['email'];
 
-        $orderSql = mysqli_query($con, "select SUM(total_price) AS total_price, COUNT(id) AS orders_count from orders where seller_id='$S_ID'");
+        $orderSql = mysqli_query($con, "SELECT orders.id, COUNT(orders.id) AS orders_count, SUM(orders.total_price) AS total_price, order_items.id 
+        FROM orders 
+        JOIN order_items ON order_items.order_id = orders.id 
+        WHERE order_items.seller_id = '$S_ID'");
+        
         $orderRow = mysqli_fetch_array($orderSql);
 
         $total_price  = $orderRow['total_price'];
         $orders_count = $orderRow['orders_count'];
 
-        $productSql = mysqli_query($con, "select COUNT(id) AS products_count from products where seller_id='$S_ID' AND active = 1");
+        $productSql = mysqli_query($con, "SELECT COUNT(id) AS products_count FROM products WHERE seller_id='$S_ID' AND active = 1");
         $productRow = mysqli_fetch_array($productSql);
 
         $products_count  = $productRow['products_count'];

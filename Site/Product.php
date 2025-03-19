@@ -152,6 +152,7 @@
                             <a href="index.php" class="nav-item nav-link ">Home</a>
                             <a href="Products.php" class="nav-item nav-link active">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
+                            <a href="Offers.php" class="nav-item nav-link">Offers</a>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
@@ -160,16 +161,20 @@
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
                             <?php }?>
                         </div>
-                        <div class="d-flex m-3 me-0">
-                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                            <a href="./Cart.php" class="position-relative me-4 my-auto">
-                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;" id="cartCount"><?php echo $cart_count ?></span>
-                            </a>
-                            <a href="./Profile.php" class="my-auto">
-                                <i class="fas fa-user fa-2x"></i>
-                            </a>
-                        </div>
+                        <?php if ($B_ID) {?>
+
+<div class="d-flex m-3 me-0">
+    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+    <a href="./Cart.php" class="position-relative me-4 my-auto">
+        <i class="fa fa-shopping-bag fa-2x"></i>
+        <span id="cartCount" class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;"><?php echo $cart_count ?></span>
+    </a>
+    <a href="./Profile.php" class="my-auto">
+        <i class="fas fa-user fa-2x"></i>
+    </a>
+</div>
+
+<?php }?>
                     </div>
                 </nav>
             </div>
@@ -290,9 +295,9 @@
 
                                         document.getElementById('addToCart').addEventListener('click',function(e) {
 
-                                            const color = document.getElementById('color_id').value
-                                            const size = document.getElementById('size_id').value
-                                            const qty = document.getElementById('qty').value
+                                            const color = document.getElementById('color_id')?.value
+                                            const size = document.getElementById('size_id')?.value
+                                            const qty = document.getElementById('qty')?.value
                         
                                                 
                                             const options = JSON.stringify({
@@ -513,7 +518,7 @@
 ">
                                 <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
                             </div>
-                            <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;"><?php echo $category_name ?></div>
+                            <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;"><?php echo $category_name ?></div>
                             <div class="p-4 pb-0 rounded-bottom">
                                 <h4><?php echo $product_name ?></h4>
                                 <p><?php echo substr($product_description, 0, 10) ?></p>

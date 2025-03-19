@@ -4,6 +4,8 @@
     include "../Connect.php";
 
     $B_ID = $_SESSION['B_ID'];
+    $seller_id = $_GET['seller_id'];
+    $product_id = $_GET['product_id'];
 
     if ($B_ID) {
 
@@ -12,36 +14,6 @@
 
         $cart_count = $row1['cart_count'];
 
-        $sql2 = mysqli_query($con, "SELECT * FROM users WHERE id = '$B_ID'");
-        $row2 = mysqli_fetch_array($sql2);
-
-        $name     = $row2['name'];
-        $email    = $row2['email'];
-        $phone    = $row2['phone'];
-        $password = $row2['password'];
-
-        if (isset($_POST['Submit'])) {
-
-            $B_ID     = $_POST['B_ID'];
-            $name     = $_POST['name'];
-            $phone    = $_POST['phone'];
-            $email    = $_POST['email'];
-            $password = $_POST['password'];
-
-            $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
-            $stmt->bind_param("ssssi", $name, $password, $phone, $email, $B_ID);
-
-            if ($stmt->execute()) {
-
-                echo "<script language='JavaScript'>
-                alert ('Account Updated Successfully !');
-           </script>";
-
-                echo "<script language='JavaScript'>
-          document.location='./Profile.php';
-             </script>";
-            }
-        }
     }
 
 ?>
@@ -170,10 +142,10 @@
 
         <!-- Single Page Header start -->
         <div class="container-fluid page-header py-5">
-            <h1 class="text-center text-white display-6">Profile</h1>
+            <h1 class="text-center text-white display-6">Rate</h1>
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Profile</li>
+                <li class="breadcrumb-item active text-white">Rate</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -182,37 +154,46 @@
         <!-- Checkout Page Start -->
         <div class="container-fluid py-5">
             <div class="container py-5">
-                <h1 class="mb-4">Account Info</h1>
+                <h1 class="mb-4">Rate</h1>
                 <form action="./Profile.php" method="POST">
                     <input type="hidden" name="B_ID" value="<?php echo $B_ID ?>">
                     <div class="row g-5">
                         <div class="col-md-12 col-lg-12 col-xl-12">
+
                             <div class="row">
                                 <div class="col-md-12 col-lg-12">
                                     <div class="form-item w-100">
-                                        <label class="form-label my-3">Full Name<sup>*</sup></label>
-                                        <input type="text" name="name" class="form-control" value="<?php echo $name ?>" required>
+                                        <label class="form-label my-3">Rate Seller</label>
+                                        <div class="w-100 d-flex">
+                                        <a href="Rate-Seller.php?Rate=1&seller_id=<?php echo $seller_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="1" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Seller.php?Rate=2&seller_id=<?php echo $seller_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="2" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Seller.php?Rate=3&seller_id=<?php echo $seller_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="3" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Seller.php?Rate=4&seller_id=<?php echo $seller_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="4" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Seller.php?Rate=5&seller_id=<?php echo $seller_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="5" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        </div>
                                     </div>
                                 </div>
-
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Email<sup>*</sup></label>
-                                <input type="email" name="email" class="form-control" value="<?php echo $email ?>" required>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Phone <sup>*</sup></label>
-                                <input type="text" name="phone" pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers" class="form-control" value="<?php echo $phone ?>" required>
-                            </div>
-                            <div class="form-item">
-                                <label class="form-label my-3">Password<sup>*</sup></label>
-                                <input type="text" name="password" class="form-control" value="<?php echo $password ?>" required>
                             </div>
 
-                    <div class="row g-4 text-center align-items-center justify-content-center pt-4">
 
-                        <button class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" type="submit" name="Submit">Save</button>
-                    </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="form-item w-100">
+                                        <label class="form-label my-3">Rate Product</label>
+                                        <div class="w-100 d-flex">
+                                        <a href="Rate-Product.php?Rate=1&product_id=<?php echo $product_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="1" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Product.php?Rate=2&product_id=<?php echo $product_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="2" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Product.php?Rate=3&product_id=<?php echo $product_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="3" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Product.php?Rate=4&product_id=<?php echo $product_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="4" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        <a href="Rate-Product.php?Rate=5&product_id=<?php echo $product_id; ?>&B_ID=<?php echo $B_ID; ?>" role="button"><i title="5" style="color:#fad00e" class="fa fa-star"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                 
+                        
+
+              
 
 
                         </div>

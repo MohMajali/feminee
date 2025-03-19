@@ -27,6 +27,22 @@
 }
 /*** Spinner End ***/
 
+a {
+    color: #bd7d92 !important;
+}
+
+.background-sec {
+    background-color: #BD7D92 !important;
+}
+
+.secondry-text {
+    color: none !important;
+}
+
+.nav-link {
+    color: #BD7D92 !important;
+}
+
 
 /*** Button Start ***/
 .btn {
@@ -252,12 +268,12 @@
     content: "";
     width: 35px;
     height: 35px;
-    background: var(--bs-secondary);
+    background: #030101;
     position: absolute;
     bottom: -10px;
     transform: translate(-50%);
     transform: rotate(45deg);
-    background: var(--bs-secondary);
+    /* background: var(--bs-secondary); */
     
 }
 /*** featurs End ***/
@@ -278,7 +294,7 @@
 
 /*** Fruits Start ***/
 .fruite .tab-class .nav-item a.active {
-    background: var(--bs-secondary) !important;
+    background: #BD7D92 !important;
 }
 
 .fruite .tab-class .nav-item a.active span {

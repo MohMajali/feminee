@@ -13,11 +13,38 @@
 
     } else {
 
-        $sql1 = mysqli_query($con, "select * from users where id='$S_ID'");
+        $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
         $row1 = mysqli_fetch_array($sql1);
 
         $name  = $row1['name'];
         $email = $row1['email'];
+
+        if (isset($_POST['Submit'])) {
+
+            $S_ID        = $_POST['S_ID'];
+            $product_id  = $_POST['product_id'];
+            $title       = $_POST['title'];
+            $description = $_POST['description'];
+            $price       = $_POST['price'];
+
+            $stmt = $con->prepare("INSERT INTO offers (seller_id, product_id, title, description, price) VALUES (?, ?, ?, ?, ?) ");
+
+            $stmt->bind_param("iissd", $S_ID, $product_id, $title, $description, $price);
+
+            if ($stmt->execute()) {
+
+
+                echo "<script language='JavaScript'>
+              alert ('A New Offer Has Been Added Successfully !');
+         </script>";
+
+                echo "<script language='JavaScript'>
+        document.location='./Offers.php';
+           </script>";
+
+            }
+
+        }
     }
 
 ?>
@@ -28,7 +55,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Orders - Feminee</title>
+    <title>Offers - Feminee</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -120,21 +147,122 @@
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Orders</h1>
+        <h1>Offers</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Orders</li>
+            <li class="breadcrumb-item">Offers</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+        <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+          >
+            Add New Offer
+          </button>
+        </div>
+
+        <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Offer Information</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+
+                <form method="POST" action="./Offers.php" enctype="multipart/form-data">
+
+                <input type="hidden" name="S_ID" value="<?php echo $S_ID ?>" id="">
+
+                <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Product</label
+                    >
+                    <div class="col-sm-8">
+                       <select name="product_id" class="form-select" id="">
+                        <option value="" selected disabled>Select Product</option>
+                       <?php
+                           $sql1 = mysqli_query($con, "SELECT * from products WHERE seller_id = '$S_ID' AND active = 1");
+
+                           while ($row1 = mysqli_fetch_array($sql1)) {
+
+                               $product_id   = $row1['id'];
+                               $product_name = $row1['name'];
+
+                           ?>
+
+<option value="<?php echo $product_id ?>"><?php echo $product_name ?></option>
+    <?php }?>
+                       </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Title</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="text" name="title" class="form-control" />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Description</label
+                    >
+                    <div class="col-sm-8">
+                       <textarea name="description" class="form-control" id=""></textarea>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="price" class="col-sm-4 col-form-label"
+                      >Price</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="number" min="0.01" step="0.01" name="price" class="form-control" id="price" required/>
+                    </div>
+                  </div>
 
 
+
+                  <div class="row mb-3">
+                    <div class="text-end">
+                      <button type="submit" name="Submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12">
+         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
               <div class="card-body">
                 <!-- Table with stripped rows -->
@@ -142,63 +270,53 @@
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Offer</th>
-                      <th scope="col">Customer Name</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Total Price</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Product</th>
+                      <th scope="col">Price</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-                      $sql1 = mysqli_query($con, "SELECT orders.id, orders.buyer_id, orders.status_id, orders.total_price, orders.created_at, orders.offer_id,
-users.name AS customer_name,
-statuses.name AS status_name
-from orders
-JOIN users ON users.id = orders.buyer_id
-JOIN statuses ON statuses.id = orders.status_id
-JOIN order_items ON order_items.seller_id = '$S_ID'
-ORDER BY id DESC");
+                      $sql1 = mysqli_query($con, "SELECT * from offers WHERE seller_id = '$S_ID' ORDER BY id DESC");
 
                       while ($row1 = mysqli_fetch_array($sql1)) {
 
-                          $order_id      = $row1['id'];
-                          $offer_id      = $row1['offer_id'];
-                          $buyer_id      = $row1['buyer_id'];
-                          $status_id     = $row1['status_id'];
-                          $total_price   = $row1['total_price'];
-                          $customer_name = $row1['customer_name'];
-                          $status_name   = $row1['status_name'];
-                          $created_at    = $row1['created_at'];
+                          $offer_id    = $row1['id'];
+                          $offer_title = $row1['title'];
+                          $product_id  = $row1['product_id'];
+                          $price       = $row1['price'];
+                          $active      = $row1['active'];
+                          $created_at  = $row1['created_at'];
 
-                          $sql2 = mysqli_query($con, "SELECT title FROM offers WHERE id = '$offer_id'");
+                          $sql2 = mysqli_query($con, "SELECT * from products WHERE id = '$product_id'");
                           $row2 = mysqli_fetch_array($sql2);
 
-                          $offer_title = $row2['title'];
+                          $product_name = $row2['name'];
 
                       ?>
                     <tr>
-                      <th scope="row"><?php echo $order_id ?></th>
-                      <td><?php echo $offer_title ?></td>
-                      <td><?php echo $customer_name ?></td>
-                      <td><?php echo $status_name ?></td>
-                      <td><?php echo $total_price ?> JODs</td>
+                      <th scope="row"><?php echo $offer_id ?></th>
+                      <th scope="row"><?php echo $offer_title ?></th>
+                      <td><?php echo $product_name ?></td>
+                      <td><?php echo $price ?> JODs</td>
                       <th scope="row"><?php echo $created_at ?></th>
                       <td>
 
               <div class="d-flex flex-column">
               <div class="d-flex mb-2">
-                        <a href="<?php echo $offer_id ? './Order-Items.php?order_id=' . $order_id . '&offer_id=' . $offer_id : './Order-Items.php?order_id=' . $order_id?>" class="btn btn-success me-2"
-                          >Items</a>
-
-                          <?php if ($status_id == 1) {?>
-                            <a href="./ChangeStatus.php?order_id=<?php echo $order_id ?>&status_id=2" class="btn btn-primary">Start delivery</a>
-                            <?php } else if ($status_id == 2) {?>
-                              <a href="./ChangeStatus.php?order_id=<?php echo $order_id ?>&status_id=3" class="btn btn-primary">Delieverd</a>
-                              <?php }?>
 
 
+                        <?php if ($active == 1) {?>
+
+<a href="./DeleteOrRestoreOffer.php?offer_id=<?php echo $offer_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+
+<?php } else {?>
+
+  <a href="./DeleteOrRestoreOffer.php?offer_id=<?php echo $offer_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+
+<?php }?>
                         </div>
 
 
@@ -236,7 +354,7 @@ ORDER BY id DESC");
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(6) .nav-link').classList.remove('collapsed')
    });
 </script>
 
