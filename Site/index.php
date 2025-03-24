@@ -49,6 +49,28 @@
 
         <!-- Template Stylesheet -->
         <link href="css/style.css" rel="stylesheet">
+
+        <style>
+
+            .love-icon {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                color: red;
+                z-index: 10;
+                font-size: 20px;
+            }
+
+            .not-fav {
+
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                color: white;
+                z-index: 10;
+                font-size: 20px;
+            }
+    </style>
     </head>
 
     <body>
@@ -87,6 +109,9 @@
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
+                            <?php if($B_ID) {?>
+                                <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
+                                <?php }?>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
@@ -296,9 +321,21 @@
 
                                             $categoryName = $categoryRow['name'];
 
+                                            if ($B_ID) {
+
+                                                $favSql = mysqli_query($con, "SELECT * FROM favorites WHERE product_id = '$product_id' AND buyer_id = '$B_ID'");
+                                                $favRow = mysqli_fetch_array($favSql);
+
+                                                $isFavorite = $favRow['active'];
+                                            }
+
                                         ?>
                                         <div class="col-md-6 col-lg-4 col-xl-3">
-                                            <div class="rounded position-relative fruite-item">
+                                            <div class="rounded position-relative fruite-item position-relative">
+                                                <?php if ($B_ID) {?>
+                                            <i id="icon-<?php echo $product_id ?>" onclick="addToFav(<?php echo $B_ID ?>,<?php echo $product_id ?>)" class="<?php echo $isFavorite ? 'fa fa-heart love-icon' : 'fa fa-heart not-fav' ?>"></i>
+                                            <?php }?>
+
                                                 <div class="fruite-img">
                                                     <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
@@ -361,6 +398,7 @@
                                             ?>
                                         <div class="col-md-6 col-lg-4 col-xl-3">
                                             <div class="rounded position-relative fruite-item">
+
                                                 <div class="fruite-img">
                                                     <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
                                                 </div>
@@ -389,7 +427,7 @@
         <!-- Fruits Shop End-->
 
 
-   
+
 
 
         <!-- Vesitable Shop Start-->
@@ -443,7 +481,6 @@
                             <h1 class="display-3 text-white">Fresh Exotic Fruits</h1>
                             <p class="fw-normal display-3 text-dark mb-4">in Our Store</p>
                             <p class="mb-4 text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
-                            <a href="#" class="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5">BUY</a>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -585,6 +622,40 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/lightbox/js/lightbox.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <script>
+        const addToFav = (customerId, productId) => {
+
+
+
+
+fetch(`./AddToFavorite.php?buyer_id=${customerId}&product_id=${productId}`)
+.then((response) => response.json())
+.then(data => {
+
+
+
+    if (!data["error"]) {
+
+
+        document.getElementById(`icon-${productId}`).classList.remove('fa', 'fa-heart', 'not-fav');
+        document.getElementById(`icon-${productId}`).classList.add('fa', 'fa-heart', 'love-icon');
+
+
+
+
+    } else {
+
+
+        alert(data['message'])
+
+    }
+
+
+})
+
+}
+    </script>
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>

@@ -153,6 +153,9 @@
                             <a href="Products.php" class="nav-item nav-link active">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
+                            <?php if($B_ID) {?>
+                                <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
+                                <?php }?>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>

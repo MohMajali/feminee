@@ -5,6 +5,13 @@
 
     $B_ID = $_SESSION['B_ID'];
 
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    require '../phpmailer/src/Exception.php';
+    require '../phpmailer/src/PHPMailer.php';
+    require '../phpmailer/src/SMTP.php';
+
     if ($B_ID) {
 
         $sql211 = mysqli_query($con, "SELECT COUNT(id) AS cart_count FROM carts WHERE buyer_id = '$B_ID'");
@@ -56,9 +63,9 @@
                 $options    = $item['options'];
                 $qty        = $item['qty'];
 
-                $stmt = $con->prepare("INSERT INTO orders (buyer_id, seller_id, total_price) VALUES (?, ?, ?) ");
+                $stmt = $con->prepare("INSERT INTO orders (buyer_id, total_price) VALUES (?, ?) ");
 
-                $stmt->bind_param("iid", $buyer_id, $seller_id, $totalPrice);
+                $stmt->bind_param("id", $buyer_id, $totalPrice);
 
                 if ($stmt->execute()) {
 
@@ -95,6 +102,45 @@
 
                                 $DeleteFromCartStmt->bind_param("i", $cart_id);
                                 $DeleteFromCartStmt->execute();
+
+                                $sellersSql = mysqli_query($con, "select * from users where id='$seller_id'");
+                                $sellerRow  = mysqli_fetch_array($sellersSql);
+
+                                $sellerEmail = $sellerRow['email'];
+
+                                $buyerSql = mysqli_query($con, "select * from users where id='$buyer_id'");
+                                $buyerRow = mysqli_fetch_array($buyerSql);
+
+                                $buyerName  = $buyerRow['name'];
+                                $buyerEmail = $buyerRow['email'];
+
+                                //whunewnggqjhqyoa
+
+                                try {
+
+                                    $mail = new PHPMailer(true);
+
+                                    $mail->isSMTP();
+                                    $mail->Host       = 'smtp.gmail.com';
+                                    $mail->SMTPAuth   = true;
+                                    $mail->Username   = 'femineeproject@gmail.com';
+                                    $mail->Password   = 'whunewnggqjhqyoa';
+                                    $mail->SMTPSecure = 'ssl';
+                                    $mail->Port       = 465;
+
+                                    $mail->setFrom($buyerEmail);
+                                    $mail->addAddress($sellerEmail);
+
+                                    $mail->Subject = "Order Request";
+                                    $mail->Body    = "A Request From {$buyerName}";
+
+                                    $mail->send();
+
+                                } catch (Exception $e) {
+
+                                    echo $e->getMessage();
+                                }
+
                             }
 
                         }
@@ -127,7 +173,7 @@
         <meta content="" name="keywords">
         <meta content="" name="description">
 
-        
+
     <link href="../assets/img/Logo.png" rel="icon" />
     <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
 
@@ -188,6 +234,9 @@
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
+                            <?php if ($B_ID) {?>
+                                <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
+                                <?php }?>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
