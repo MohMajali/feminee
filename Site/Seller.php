@@ -23,6 +23,7 @@
     $sellerTotalRate   = $row2['total_rate'];
     $sellerImage       = $row2['image'];
     $sellerDescription = $row2['description'];
+    $instagram_link    = $row2['instagram_link'];
 
     if (isset($_POST['Submit'])) {
 
@@ -110,7 +111,7 @@
             </div>
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <img src="../assets//img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -120,7 +121,7 @@
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
-                            <?php if($B_ID) {?>
+                            <?php if ($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
@@ -129,6 +130,8 @@
                             <?php }?>
 <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
                             <?php }?>
                         </div>
                         <?php if ($B_ID) {?>
@@ -178,9 +181,9 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6"><?php echo $sellerName ?> Detail</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="./Sellers.php">Sellers</a></li>
-                <li class="breadcrumb-item active text-white"><?php echo $sellerName ?> Detail</li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item"><a href="./Sellers.php" style="color: #fff !important;">Sellers</a></li>
+                <li class="breadcrumb-item active text-white" style="color: #fff !important;"><?php echo $sellerName ?> Detail</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -199,7 +202,11 @@
                             </div>
                             <div class="col-lg-6">
                                 <h4 class="fw-bold mb-3"><?php echo $sellerName ?></h4>
-                                <p class="mb-3">Phone:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <?php echo $sellerPhone ?></p>
+                                <p class="mb-3">Phone:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <?php echo $sellerPhone ?></p>
+                                <p class="mb-3">
+                                    <a href="<?php echo $instagram_link ?>" target="_blank"><i class="bi bi-instagram"></i></a>
+                                    <i class="bi bi-facebook"></i>
+                                </p>
                                 <h5 class="fw-bold mb-3"></h5>
                                 <div class="d-flex mb-4">
                                 <?php for ($ii = 1; $ii < $sellerTotalRate; $ii++) {?>
@@ -302,6 +309,51 @@
                         </div>
                     </div>
 
+                    <div class="col-lg-4 col-xl-3">
+                        <div class="row g-4 fruite">
+
+
+
+                            <div class="col-lg-12">
+                                <h4 class="mb-4">Featured products</h4>
+
+                                <?php
+                                    $sql223 = mysqli_query($con, "SELECT * from products WHERE active = 1 AND total_rate >= 3.5 AND seller_id = '$seller_id'");
+
+                                    while ($row223 = mysqli_fetch_array($sql223)) {
+
+                                        $product_id_featured         = $row223['id'];
+                                        $product_name_featured       = $row223['name'];
+                                        $product_image_featured      = $row223['image'];
+                                        $product_total_rate_featured = $row223['total_rate'];
+                                        $product_price_featured      = $row223['price'];
+
+                                    ?>
+
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <div class="rounded me-4" style="width: 100px; height: 100px;">
+                                        <img src="../Seller_Dashboard/<?php echo $product_image_featured ?>" class="img-fluid rounded" alt="Image">
+                                    </div>
+                                    <div>
+                                        <a href="./Product.php?product_id=<?php echo $product_id_featured ?>"><h6 class="mb-2"><?php echo $product_name_featured ?></h6></a>
+                                        <div class="d-flex mb-2">
+                                        <?php for ($iiii = 1; $iiii < $product_total_rate_featured; $iiii++) {?>
+                                                        <i class="fa fa-star text-secondary"></i>
+                                                        <?php }?>
+                                        </div>
+                                        <div class="d-flex mb-2">
+                                            <h5 class="fw-bold me-2"><?php echo $product_price_featured ?> JODs</h5>
+                                            <h5 class="text-danger text-decoration-line-through"></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php }?>
+
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
                 <h1 class="fw-bold mb-0"><?php echo $sellerName ?> products</h1>
                 <div class="vesitable">
@@ -330,9 +382,7 @@
 
 
                         <div class="border border-primary rounded position-relative vesitable-item" id="<?php echo $product_id ?>">
-                            <div class="vesitable-img" style="
-    height: 180px;
-">
+                            <div class="vesitable-img" style="height: 180px;">
                                 <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
                             </div>
                             <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;"><?php echo $category_name ?></div>

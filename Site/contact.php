@@ -76,7 +76,7 @@
             </div>
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <img src="../assets//img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -93,9 +93,11 @@
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
-<?php if (! $B_ID) {?>
+                            <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
-                            <?php }?>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
+                            <?php } ?>
                         </div>
                         <?php if ($B_ID) {?>
 

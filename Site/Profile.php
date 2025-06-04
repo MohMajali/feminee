@@ -92,22 +92,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+          
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -120,13 +111,14 @@
                             <?php if($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
-                            <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
-<?php if (! $B_ID) {?>
+                            <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
-                            <?php }?>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
+                            <?php } ?>
                         </div>
                         <?php if ($B_ID) {?>
 
@@ -175,8 +167,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Profile</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Profile</li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item active text-white" style="color: #fff !important;">Profile</li>
             </ol>
         </div>
         <!-- Single Page Header End -->

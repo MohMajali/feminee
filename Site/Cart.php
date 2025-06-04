@@ -62,22 +62,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+        
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -90,13 +81,14 @@
                             <?php if($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
-                            <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
-<?php if (! $B_ID) {?>
+                            <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
-                            <?php }?>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
+                            <?php } ?>
                         </div>
                         <?php if ($B_ID) {?>
 
@@ -145,8 +137,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Cart</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Cart</li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item active text-white" style="color: #fff !important;">Cart</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -261,14 +253,14 @@
                                 <div class="d-flex justify-content-between">
                                     <h5 class="mb-0 me-4">Shipping</h5>
                                     <div class="">
-                                        <p class="mb-0">Flat rate: 2.00 JODs</p>
+                                        <p class="mb-0">Flat rate: 1.00 JODs</p>
                                     </div>
                                 </div>
                                 <!-- <p class="mb-0 text-end">Shipping to Ukraine.</p> -->
                             </div>
                             <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                                 <h5 class="mb-0 ps-4 me-4">Total</h5>
-                                <p class="mb-0 pe-4"><?php echo $totalPrice + 2 ?> JODs</p>
+                                <p class="mb-0 pe-4"><?php echo $totalPrice + 1 ?> JODs</p>
                             </div>
                             <a href="./Checkout.php" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Proceed Checkout</a>
                         </div>

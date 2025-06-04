@@ -18,6 +18,7 @@
 
         $name  = $row1['name'];
         $email = $row1['email'];
+        $image = $row1['image'];
     }
 
 ?>
@@ -83,7 +84,7 @@
               data-bs-toggle="dropdown"
             >
               <img
-                src="https://www.computerhope.com/jargon/g/guest-user.png"
+                                src="<?php echo $image ?>"
                 alt="Profile"
                 class="rounded-circle"
               />
@@ -152,30 +153,43 @@
                   </thead>
                   <tbody>
                   <?php
-                      $sql1 = mysqli_query($con, "SELECT orders.id, orders.buyer_id, orders.status_id, orders.total_price, orders.created_at, orders.offer_id,
-users.name AS customer_name,
-statuses.name AS status_name
-from orders
-JOIN users ON users.id = orders.buyer_id
-JOIN statuses ON statuses.id = orders.status_id
-JOIN order_items ON order_items.seller_id = '$S_ID'
-ORDER BY id DESC");
+                      $sql1 = mysqli_query($con, "SELECT * FROM orders WHERE seller_id = '$S_ID'");
 
                       while ($row1 = mysqli_fetch_array($sql1)) {
 
-                          $order_id      = $row1['id'];
-                          $offer_id      = $row1['offer_id'];
-                          $buyer_id      = $row1['buyer_id'];
-                          $status_id     = $row1['status_id'];
-                          $total_price   = $row1['total_price'];
-                          $customer_name = $row1['customer_name'];
-                          $status_name   = $row1['status_name'];
-                          $created_at    = $row1['created_at'];
+                          $total_price = 0;
+
+                          $order_id   = $row1['id'];
+                          $buyer_id   = $row1['buyer_id'];
+                          $offer_id   = $row1['offer_id'];
+                          $status_id  = $row1['status_id'];
+                          $created_at = $row1['created_at'];
 
                           $sql2 = mysqli_query($con, "SELECT title FROM offers WHERE id = '$offer_id'");
                           $row2 = mysqli_fetch_array($sql2);
 
                           $offer_title = $row2['title'];
+
+                          $sql3 = mysqli_query($con, "SELECT name FROM statuses WHERE id = '$status_id'");
+                          $row3 = mysqli_fetch_array($sql3);
+
+                          $status_name = $row3['name'];
+
+                          $sql4 = mysqli_query($con, "SELECT name FROM users WHERE id = '$buyer_id'");
+                          $row4 = mysqli_fetch_array($sql4);
+
+                          $customer_name = $row4['name'];
+
+                          $sql55 = mysqli_query($con, "SELECT product_id, option_id, quantity from order_items WHERE order_id = '$order_id'");
+
+                          while ($row55 = mysqli_fetch_array($sql55)) {
+
+                              $product_id    = $row55['product_id'];
+                              $quantity      = $row55['quantity'];
+                              $product_price = $row55['product_price'];
+
+                              $total_price += ($product_price * $quantity);
+                          }
 
                       ?>
                     <tr>
@@ -189,7 +203,7 @@ ORDER BY id DESC");
 
               <div class="d-flex flex-column">
               <div class="d-flex mb-2">
-                        <a href="<?php echo $offer_id ? './Order-Items.php?order_id=' . $order_id . '&offer_id=' . $offer_id : './Order-Items.php?order_id=' . $order_id?>" class="btn btn-success me-2"
+                        <a href="<?php echo $offer_id ? './Order-Items.php?order_id=' . $order_id . '&offer_id=' . $offer_id : './Order-Items.php?order_id=' . $order_id ?>" class="btn btn-success me-2"
                           >Items</a>
 
                           <?php if ($status_id == 1) {?>

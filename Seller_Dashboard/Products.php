@@ -18,6 +18,7 @@ if (!$S_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
+    $image = $row1['image'];
 }
 
 ?>
@@ -83,7 +84,7 @@ if (!$S_ID) {
               data-bs-toggle="dropdown"
             >
               <img
-                src="https://www.computerhope.com/jargon/g/guest-user.png"
+                                  src="<?php echo $image ?>"
                 alt="Profile"
                 class="rounded-circle"
               />
@@ -181,16 +182,16 @@ while ($row1 = mysqli_fetch_array($sql1)) {
               <div class="d-flex flex-column">
               <div class="d-flex mb-2">
                         <a href="./Edit-Product.php?product_id=<?php echo $product_id ?>" class="btn btn-success me-2"
-                          >Edit</a
+                          ><i class="bi bi-pencil"></i></a
                         >
 
                         <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreProduct.php?product_id=<?php echo $product_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+<a href="./DeleteOrRestoreProduct.php?product_id=<?php echo $product_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreProduct.php?product_id=<?php echo $product_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+  <a href="./DeleteOrRestoreProduct.php?product_id=<?php echo $product_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></a>
 
 <?php }?>
                         </div>
@@ -198,7 +199,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
                         <div class="d-flex mb-2">
                         <a href="./Product-Images.php?product_id=<?php echo $product_id ?>" class="btn btn-success me-2"
-                          >Images</a
+                          ><i class="bi bi-file-earmark-image"></i></a
                         >
 
                         </div>

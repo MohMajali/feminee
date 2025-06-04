@@ -19,6 +19,7 @@
 
         $name  = $row1['name'];
         $email = $row1['email'];
+        $image = $row1['image'];
 
         $sql2 = mysqli_query($con, "select * from products where id = '$product_id'");
         $row2 = mysqli_fetch_array($sql2);
@@ -196,7 +197,7 @@
               data-bs-toggle="dropdown"
             >
               <img
-                src="https://www.computerhope.com/jargon/g/guest-user.png"
+                                 src="<?php echo $image ?>"
                 alt="Profile"
                 class="rounded-circle"
               />

@@ -276,19 +276,19 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
                         <div class="d-flex flex-column">
                         <a href="./Edit_Sub_Category.php?sub_category_id=<?php echo $sub_category_id ?>" class="btn btn-success mb-2"
-                          >Edit</a
+                          ><i class="bi bi-pencil"></i></a
                         >
                         <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreSubCategory.php?sub_category_id=<?php echo $sub_category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
+<a href="./DeleteOrRestoreSubCategory.php?sub_category_id=<?php echo $sub_category_id ?>&isActive=<?php echo 0 ?>&category_id=<?php echo $category_id?>" class="btn btn-danger mb-2"><i class="bi bi-trash"></i></a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreSubCategory.php?sub_category_id=<?php echo $sub_category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
+  <a href="./DeleteOrRestoreSubCategory.php?sub_category_id=<?php echo $sub_category_id ?>&isActive=<?php echo 1 ?>&category_id=<?php echo $category_id?>" class="btn btn-primary mb-2"><i class="bi bi-arrow-clockwise"></i></a>
 
 <?php }?>
 <a href="./Products.php?sub_category_id=<?php echo $sub_category_id ?>" class="btn btn-success me-2"
-                          >Products</a
+                          ><i class="bi bi-box-seam"></i></a
                         >
 
                         </div>

@@ -1,26 +1,26 @@
 <?php
-session_start();
+    session_start();
 
-include "../Connect.php";
+    include "../Connect.php";
 
-$S_ID = $_SESSION['S_Log'];
-$order_id = $_GET['order_id'];
-$offer_id = $_GET['offer_id'];
+    $S_ID     = $_SESSION['S_Log'];
+    $order_id = $_GET['order_id'];
 
-if (!$S_ID) {
+    if (! $S_ID) {
 
-    echo '<script language="JavaScript">
+        echo '<script language="JavaScript">
      document.location="../Login.php";
     </script>';
 
-} else {
+    } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id='$S_ID'");
-    $row1 = mysqli_fetch_array($sql1);
+        $sql1 = mysqli_query($con, "select * from users where id='$S_ID'");
+        $row1 = mysqli_fetch_array($sql1);
 
-    $name = $row1['name'];
-    $email = $row1['email'];
-}
+        $name  = $row1['name'];
+        $email = $row1['email'];
+        $image = $row1['image'];
+    }
 
 ?>
 
@@ -85,7 +85,7 @@ if (!$S_ID) {
               data-bs-toggle="dropdown"
             >
               <img
-                src="https://www.computerhope.com/jargon/g/guest-user.png"
+                              src="<?php echo $image ?>"
                 alt="Profile"
                 class="rounded-circle"
               />
@@ -149,53 +149,46 @@ if (!$S_ID) {
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT order_items.product_id, order_items.option_id, order_items.quantity, order_items.option_id, orders.total_price,
-products.name AS product_name, products.price AS product_price
-FROM order_items 
-JOIN products ON products.id = order_items.product_id
-JOIN orders ON orders.id = order_items.order_id
-WHERE order_id = '$order_id'
-ORDER BY order_items.id DESC
-");
+                      $sql1 = mysqli_query($con, "SELECT * FROM order_items WHERE order_id = '$order_id'");
 
-while ($row1 = mysqli_fetch_array($sql1)) {
+                      while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $product_id = $row1['product_id'];
-    $options    = json_decode($row1['option_id'], true);
-    $color_id   = $options['color_id'];
-    $size_id    = $options['size_id'];
-    $quantity = $row1['quantity'];
-    $product_name = $row1['product_name'];
-    $product_price = $row1['product_price'];
-    $option_name = $row1['option_name'];
-    $option_value = $row1['option_value'];
-    $total_price = $row1['total_price'];
+                          $product_id = $row1['product_id'];
+                          $options    = json_decode($row1['option_id'], true);
+                          $color_id   = $options['color_id'];
+                          $size_id    = $options['size_id'];
+                          $quantity   = $row1['quantity'];
 
+                          $sql2 = mysqli_query($con, "SELECT * FROM products WHERE id = '$product_id'");
+                          $row2 = mysqli_fetch_array($sql2);
 
-    if ($color_id != '') {
+                          $product_name  = $row2['name'];
+                          $product_price = $row2['price'];
 
-      $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
-      $row66 = mysqli_fetch_array($sql66);
+                          if ($color_id != '') {
 
-      $color_value = $row66['value'];
-  }
+                              $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
+                              $row66 = mysqli_fetch_array($sql66);
 
-  if ($size_id != '') {
+                              $color_value = $row66['value'];
+                          }
 
-      $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
-      $row77 = mysqli_fetch_array($sql77);
+                          if ($size_id != '') {
 
-      $size_value = $row77['value'];
+                              $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
+                              $row77 = mysqli_fetch_array($sql77);
 
-  }
+                              $size_value = $row77['value'];
 
-    ?>
+                          }
+
+                      ?>
                     <tr>
                       <th scope="row"><?php echo $product_name ?></th>
-                      <td><?php echo ($color_value . ' ' . $size_value) ?></td>
+                      <td><?php echo($color_value . ' ' . $size_value) ?></td>
                       <td><?php echo $quantity ?></td>
                       <td><?php echo $product_price ?>JODs</td>
-                      <td><?php echo $offer_id ? $total_price: ($product_price * $quantity) ?> JODs</td>
+                      <td><?php echo($product_price * $quantity) ?> JODs</td>
                     </tr>
 <?php
 }?>

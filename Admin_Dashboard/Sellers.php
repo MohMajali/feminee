@@ -171,8 +171,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <td scope="row"><?php echo $seller_phone ?></td>
                       <th scope="row"><?php echo $created_at ?></th>
                       <th scope="row">
-                        <a href="./Products.php?seller_id=<?php echo $seller_id?>" class="btn btn-success">Products</a>
-                        <a href="./Subscriptions.php?seller_id=<?php echo $seller_id?>" class="btn btn-primary">Subscriptions</a>
+                        <a href="./Products.php?seller_id=<?php echo $seller_id?>" class="btn btn-success"><i class="bi bi-box-seam"></i></a>
+                        <a href="./Subscriptions.php?seller_id=<?php echo $seller_id?>" class="btn btn-primary"><i class="bi bi-calendar-date"></i></a>
                       </th>
                    
                     </tr>

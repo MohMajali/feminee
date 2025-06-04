@@ -62,22 +62,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+       
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -87,7 +78,7 @@
                             <a href="Products.php" class="nav-item nav-link active">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
-                            <?php if($B_ID) {?>
+                            <?php if ($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
                             <a href="contact.php" class="nav-item nav-link">Contact</a>
@@ -96,6 +87,8 @@
                             <?php }?>
 <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
                             <?php }?>
                         </div>
                         <?php if ($B_ID) {?>
@@ -145,8 +138,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Products</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Products</li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item active text-white" style="color: #fff !important;">Products</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -155,17 +148,35 @@
         <!-- Fruits Shop Start-->
         <div class="container-fluid fruite py-5">
             <div class="container py-5">
-                <h1 class="mb-4">Fresh fruits shop</h1>
+                <h1 class="mb-4">Feminee</h1>
                 <div class="row g-4">
                     <div class="col-lg-12">
                         <div class="row g-4">
                             <div class="col-xl-3">
+
+                            <form action="./Products.php" method="POST">
+
                                 <div class="input-group w-100 mx-auto d-flex">
-                                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                                    <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                                    <input type="search" class="form-control p-3" name="product_name" placeholder="keywords" aria-describedby="search-icon-1">
+                                    <button type="submit" id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+                                </div>
+
+                            </form>
+                            </div>
+                            <div class="col-3"></div>
+                            <div class="col-3">
+                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                    <label for="fruits">Rating:</label>
+                                    <select id="rating" name="rating" class="border-0 form-select-sm bg-light me-3" form="fruitform">
+                                        <option value="all">All</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="col-6"></div>
                             <div class="col-xl-3">
                                 <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                                     <label for="fruits">Default Sorting:</label>
@@ -212,8 +223,23 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4 class="mb-2">Price</h4>
-                                            <input type="range" class="form-range w-100 price-change" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="rangeShowVal(this.value)">
-                                            <output id="amount" name="amount" min-velue="0" max-value="500" for="rangeInput">0</output>
+
+
+
+
+                                            <!-- <input type="range" class="form-range w-100 price-change" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="rangeShowVal(this.value)">
+                                            <output id="amount" name="amount" min-velue="0" max-value="500" for="rangeInput">0</output> -->
+
+
+                                            <label for="min_price">Minimum Price</label>
+                                            <input type="number" id="min_price" min="0" name="min price" class="form-control mb-2">
+                                            <label for="min_price">Max Price</label>
+                                            <input type="number" id="max_price" min="0" name="max price" class="form-control">
+
+
+
+
+
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -294,7 +320,148 @@
     <script src="lib/lightbox/js/lightbox.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
+
     <script>
+$(function(){
+  // ——— 1) Initialize filters (with any PHP‐supplied defaults) ———
+  const filters = {
+    category_id:     <?php echo json_encode($selected_category_id); ?> || null,
+    sub_category_id: null,
+    product_name:    <?php echo json_encode($product_name); ?>     || null,
+    filter:          null,
+    rating:          null,
+    min:             null,
+    max:             null
+  };
+
+  // ——— 2) Core fetch & render functions ———
+  function fetchProducts() {
+    $.getJSON('GetProducts.php', filters)
+      .done(renderProducts)
+      .fail((jq,X,t) => console.error('Products error:', t));
+  }
+
+  function renderProducts(products) {
+    const $out = $('#products_div').empty();
+    products.forEach((p,i) => {
+      $out.append(`
+        <div class="col-md-6 col-lg-6 col-xl-4">
+          <div class="rounded position-relative fruite-item">
+            <div class="fruite-img">
+              <img src="../Seller_Dashboard/${p.image}"
+                   class="img-fluid w-100 rounded-top"
+                   style="height:220px;" alt="">
+            </div>
+            <div class="text-white background-sec px-3 py-1 rounded position-absolute"
+                 style="top:10px;left:10px;">
+              ${p.category_name}
+            </div>
+            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+              <h4>${p.name.substring(0, 15) + '...'}</h4>
+              <p>${p.description.substring(0,10)}</p>
+              <div class="d-flex justify-content-between flex-lg-wrap">
+                <p class="text-dark fs-5 fw-bold mb-0">${p.price} JODs</p>
+                <a href="./Product.php?product_id=${p.id}"
+                   class="btn border border-secondary rounded-pill px-3 text-primary">
+                  View Product
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  function fetchSubCategories(catId) {
+    $.getJSON('GetSubCategories.php', { category_id: catId })
+      .done(renderSubCategories)
+      .fail((jq,X,t) => console.error('Subs error:', t));
+  }
+
+  function renderSubCategories(cats) {
+    const $list = $('#sub_categories_div').empty();
+    cats.forEach(c => {
+      $list.append(`
+        <li>
+          <div class="d-flex justify-content-between fruite-name sub-category-link">
+            <a href="./Products.php?sub_category_id=${c.id}">${c.name}</a>
+            <span>(${c.count})</span>
+          </div>
+        </li>
+      `);
+    });
+  }
+
+  // ——— 3) Wire up all inputs & controls ———
+  // Price sliders/inputs
+  $('#min_price, #max_price').on('input', function(){
+    filters.min = parseFloat($('#min_price').val()) || null;
+    filters.max = parseFloat($('#max_price').val()) || null;
+    fetchProducts();
+  });
+
+  // Rating dropdown
+  $('#rating').on('change', function(){
+    const v = $(this).val();
+    filters.rating = (v && v !== 'all') ? parseFloat(v) : null;
+    fetchProducts();
+  });
+
+  // Default sorting dropdown
+  $('#fruits').on('change', function(){
+    const v = $(this).val();
+    filters.filter = (v && v !== 'nothing') ? v : null;
+    fetchProducts();
+  });
+
+  // Category links
+  $('.category-link a').on('click', function(e){
+    e.preventDefault();
+    const cid = new URL(this.href, location.origin).searchParams.get('category_id');
+    filters.category_id     = cid;
+    filters.sub_category_id = null;    // reset subcategory
+    fetchProducts();
+    fetchSubCategories(cid);
+  });
+
+  // Sub‐category links (delegated)
+  $(document).on('click', '.sub-category-link a', function(e){
+    e.preventDefault();
+    const scid = new URL(this.href, location.origin).searchParams.get('sub_category_id');
+    filters.sub_category_id = scid;
+    fetchProducts();
+  });
+
+  // Keyword search (modal and main bar)
+  $('form[action="./Products.php"]').on('submit', function(e){
+    e.preventDefault();
+    const val = $(this).find('input[name="product_name"]').val().trim();
+    filters.product_name = val.length ? val : null;
+    fetchProducts();
+    $('#searchModal').modal('hide');  // if inside modal
+  });
+
+  // ——— 4) Kick things off ———
+  fetchProducts();
+  if (filters.category_id) {
+    fetchSubCategories(filters.category_id);
+  }
+});
+</script>
+
+    <!-- <script>
+
+
+
+    let price;
+    let category;
+    let subcategory;
+    let filter;
+    let min;
+    let max;
+
+
         const rangeShowVal = (value) => {
 
 
@@ -317,7 +484,7 @@
                                                   <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
                                         <div class="rounded position-relative fruite-item">
                                             <div class="fruite-img">
-                                                <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                             </div>
                                             <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -341,6 +508,105 @@
     });
 }
 
+    $('#min_price').on('input', function() {
+
+
+        min = this.value
+
+        $.ajax({
+                url: `GetProducts.php?min=${this.value}&max=${max}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    
+                    $('#products_div').empty();
+                data.forEach((product, i) => {
+
+                        let productHtml = `
+
+
+                                                        <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                                <div class="rounded position-relative fruite-item">
+                                                    <div class="fruite-img">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
+                                                    </div>
+                                                    <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                        <h4>${product.name}</h4>
+                                                        <p>${product.description.substring(0, 10)}</p>
+                                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                                            <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                                            <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                        `;
+
+                        $('#products_div').append(productHtml)
+                })
+
+                },
+                error: function(x,y,z) {
+                    console.log(x,y,z);
+                    
+                }
+            });
+
+
+    })
+
+
+
+
+    $('#max_price').on('input', function() {
+
+
+max = this.value
+
+$.ajax({
+        url: `GetProducts.php?min=${min}&max=${max}`,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            $('#products_div').empty();
+        data.forEach((product, i) => {
+
+                let productHtml = `
+
+
+                                                <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                        <div class="rounded position-relative fruite-item">
+                                            <div class="fruite-img">
+                                                <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
+                                            </div>
+                                            <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                <h4>${product.name}</h4>
+                                                <p>${product.description.substring(0, 10)}</p>
+                                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                                    <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                                    <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                `;
+
+                $('#products_div').append(productHtml)
+        })
+
+        }
+    });
+
+
+})
+
             $('#fruits').change(function(e){
 
 
@@ -358,7 +624,7 @@
                                                         <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
                                                 <div class="rounded position-relative fruite-item">
                                                     <div class="fruite-img">
-                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                                     </div>
                                                     <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
                                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -382,11 +648,92 @@
             });
             })
 
+
+
+            $('#rating').change(function(e){
+
+
+                                $.ajax({
+                                url: `GetProducts.php?rating=${this.value}`,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(data) {
+                                    $('#products_div').empty();
+                                data.forEach((product, i) => {
+
+                                        let productHtml = `
+
+
+                                        <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
+                                <div class="rounded position-relative fruite-item">
+                                    <div class="fruite-img">
+                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
+                                    </div>
+                                    <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
+                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                        <h4>${product.name}</h4>
+                                        <p>${product.description.substring(0, 10)}</p>
+                                        <div class="d-flex justify-content-between flex-lg-wrap">
+                                            <p class="text-dark fs-5 fw-bold mb-0">${product.price} JODs</p>
+                                            <a href="./Product.php?product_id=${product.id}" class="btn border border-secondary rounded-pill px-3 text-primary">View Product</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+        `;
+
+        $('#products_div').append(productHtml)
+})
+
+}
+});
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         $(document).ready(function() {
 
-            let categoryId =                                                         <?php echo json_encode($selected_category_id); ?>;
-            let productName =                              <?php echo json_encode($product_name); ?>;
-            
+            let categoryId =                                                                                     <?php echo json_encode($selected_category_id); ?>;
+            let productName =                                                           <?php echo json_encode($product_name); ?>;
+
 
             let url = 'GetProducts.php'
 
@@ -396,7 +743,7 @@
             } else if(productName) {
                 url = `GetProducts.php?product_name=${productName}`
             }
-          
+
 
             $.ajax({
                 url: url,
@@ -412,7 +759,7 @@
                                                         <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
                                                 <div class="rounded position-relative fruite-item">
                                                     <div class="fruite-img">
-                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                                     </div>
                                                     <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
                                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -456,7 +803,7 @@
                                                         <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
                                                 <div class="rounded position-relative fruite-item">
                                                     <div class="fruite-img">
-                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                                     </div>
                                                     <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
                                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -530,7 +877,7 @@
                             <div class="col-md-6 col-lg-6 col-xl-4" id="${i}">
                                 <div class="rounded position-relative fruite-item">
                                     <div class="fruite-img">
-                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="">
+                                        <img src="../Seller_Dashboard/${product.image}" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                     </div>
                                     <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">${product.category_name}</div>
                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -554,7 +901,7 @@
 
 
 
-    </script>
+    </script> -->
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
     </body>

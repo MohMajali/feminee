@@ -5,11 +5,12 @@
 
     if (isset($_POST['Submit'])) {
 
-        $name     = $_POST['name'];
-        $email    = $_POST['email'];
-        $phone    = $_POST['phone'];
-        $password = $_POST['password'];
-        $type     = 2;
+        $name           = $_POST['name'];
+        $email          = $_POST['email'];
+        $phone          = $_POST['phone'];
+        $password       = $_POST['password'];
+        $instagram_link = $_POST['instagram_link'];
+        $type           = 2;
 
         $price;
 
@@ -52,9 +53,9 @@
 
         } else {
 
-            $stmt = $con->prepare("INSERT INTO users (user_type_id, name, email, phone, password) VALUES (?, ?, ?, ?, ?) ");
+            $stmt = $con->prepare("INSERT INTO users (user_type_id, name, email, phone, password, instagram_link) VALUES (?, ?, ?, ?, ?, ?) ");
 
-            $stmt->bind_param("issss", $type, $name, $email, $phone, $password);
+            $stmt->bind_param("isssss", $type, $name, $email, $phone, $password, $instagram_link);
 
             if ($stmt->execute()) {
 
@@ -205,6 +206,19 @@
                       </div>
 
                       <div class="col-6">
+                        <label for="instagram_link" class="form-label"
+                          >Instagram Link</label
+                        >
+                        <input
+                          type="text"
+                          name="instagram_link"
+                          class="form-control"
+                          id="instagram_link"
+                          required
+                        />
+                      </div>
+
+                      <div class="col-12">
                         <label for="yourPassword" class="form-label"
                           >Password</label
                         >

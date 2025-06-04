@@ -129,10 +129,8 @@
                       <th scope="col">Offer</th>
                       <th scope="col">Client Name</th>
                       <th scope="col">Seller Name</th>
-                      <th scope="col">Item Name</th>
-                      <th scope="col">Item Price</th>
-                      <th scope="col">QTY</th>
                       <th scope="col">Total Price</th>
+                      <th scope="col">Created At</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -141,34 +139,19 @@
 
     while ($row1 = mysqli_fetch_array($sql1)) {
 
-        $order_id    = $row1['id'];
-        $buyer_id    = $row1['buyer_id'];
-        $offer_id    = $row1['offer_id'];
-        $status_id   = $row1['status_id'];
-        $total_price = $row1['total_price'];
+        $total_price = 0;
 
-        $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$buyer_id'");
-        $row2 = mysqli_fetch_array($sql2);
-
-        $buyer_name = $row2['name'];
-
-        $sql3 = mysqli_query($con, "SELECT * from order_items WHERE order_id = '$order_id'");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $product_id = $row3['product_id'];
-        $seller_id  = $row3['seller_id'];
-        $qty        = $row3['quantity'];
+        $order_id   = $row1['id'];
+        $buyer_id   = $row1['buyer_id'];
+        $offer_id   = $row1['offer_id'];
+        $status_id  = $row1['status_id'];
+        $seller_id  = $row1['seller_id'];
+        $created_at = $row1['created_at'];
 
         $sql2333 = mysqli_query($con, "SELECT * from users WHERE id = '$seller_id'");
         $row2333 = mysqli_fetch_array($sql2333);
 
         $seller_name = $row2333['name'];
-
-        $sql4 = mysqli_query($con, "SELECT * from products WHERE id = '$product_id'");
-        $row4 = mysqli_fetch_array($sql4);
-
-        $item_name = $row4['name'];
-        $price     = $row4['price'];
 
         $sql2555 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
         $row2555 = mysqli_fetch_array($sql2555);
@@ -176,16 +159,35 @@
         $offer_title = $row2555['title'];
         $offer_price = $row2555['price'];
 
+        $sql3 = mysqli_query($con, "SELECT name FROM statuses WHERE id = '$status_id'");
+        $row3 = mysqli_fetch_array($sql3);
+
+        $status_name = $row3['name'];
+
+        $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$buyer_id'");
+        $row2 = mysqli_fetch_array($sql2);
+
+        $buyer_name = $row2['name'];
+
+        $sql55 = mysqli_query($con, "SELECT product_id, option_id, quantity, product_price from order_items WHERE order_id = '$order_id'");
+
+        while ($row55 = mysqli_fetch_array($sql55)) {
+
+            $product_id    = $row55['product_id'];
+            $quantity      = $row55['quantity'];
+            $product_price = $row55['product_price'];
+
+            $total_price += ($product_price * $quantity);
+        }
+
     ?>
                     <tr>
                       <th scope="row"><?php echo $order_id ?></th>
                       <th scope="row"><?php echo $offer_title ?? 'N/A' ?></th>
                       <td><?php echo $buyer_name ?></td>
                       <td><?php echo $seller_name ?></td>
-                      <td><?php echo $item_name ?></td>
-                      <td><?php echo $price ?></td>
-                      <td><?php echo $qty ?></td>
-                      <td><?php echo $offer_id ? $offer_price : ($price * $qty) ?> JODs</td>
+                      <td><?php echo $total_price ?> JODs</td>
+                      <td><?php echo $created_at ?></td>
                     </tr>
 <?php
 }?>

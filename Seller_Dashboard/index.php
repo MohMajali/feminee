@@ -17,6 +17,7 @@
         $row1 = mysqli_fetch_array($sql1);
 
         $name  = $row1['name'];
+        $image = $row1['image'];
 
         $orderSql = mysqli_query($con, "SELECT orders.id, COUNT(orders.id) AS orders_count, SUM(orders.total_price) AS total_price, order_items.id 
         FROM orders 
@@ -96,7 +97,7 @@
               data-bs-toggle="dropdown"
             >
               <img
-                src="https://www.computerhope.com/jargon/g/guest-user.png"
+                                  src="<?php echo $image ?>"
                 alt="Profile"
                 class="rounded-circle"
               />

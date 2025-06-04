@@ -175,11 +175,11 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                         <div class="d-flex flex-column">
                         <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreUser.php?user_id=<?php echo $user_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
+<a href="./DeleteOrRestoreUser.php?user_id=<?php echo $user_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2"><i class="bi bi-trash"></i></a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreUser.php?user_id=<?php echo $user_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
+  <a href="./DeleteOrRestoreUser.php?user_id=<?php echo $user_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2"><i class="bi bi-arrow-clockwise"></i></a>
 
 <?php }?>
 

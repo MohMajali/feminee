@@ -46,17 +46,19 @@
         $product_id = $row2['product_id'];
         $price      = $row2['price'];
 
-        $stmt = $con->prepare("INSERT INTO orders (buyer_id, offer_id, total_price) VALUES (?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO orders (buyer_id, offer_id, total_price, seller_id) VALUES (?, ?, ?, ?) ");
 
-        $stmt->bind_param("iid", $B_ID, $offer_id, $price);
+        $stmt->bind_param("iidi", $B_ID, $offer_id, $price, $seller_id);
+
+        $quantity = 1;
 
         if ($stmt->execute()) {
 
             $order_id = $stmt->insert_id;
 
-            $orderItemsStmt = $con->prepare("INSERT INTO order_items (order_id, seller_id, product_id) VALUES (?, ?, ?) ");
+            $orderItemsStmt = $con->prepare("INSERT INTO order_items (order_id, seller_id, product_id, product_price, quantity) VALUES (?, ?, ?, ?, ?) ");
 
-            $orderItemsStmt->bind_param("iii", $order_id, $seller_id, $product_id);
+            $orderItemsStmt->bind_param("iiidi", $order_id, $seller_id, $product_id, $price, $quantity);
 
             $orderItemsStmt->execute();
 
@@ -119,22 +121,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+    
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -144,15 +137,16 @@
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link active">Offers</a>
-                            <?php if($B_ID) {?>
+                            <?php if ($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
-                            <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
 <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
                             <?php }?>
                         </div>
                         <?php if ($B_ID) {?>
@@ -202,8 +196,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6"><?php echo $title ?> Detail</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="./Offers.php">Offers</a></li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item"><a href="./Offers.php" style="color: #fff !important;">Offers</a></li>
                 <li class="breadcrumb-item active text-white"><?php echo $title ?> Detail</li>
             </ol>
         </div>
@@ -224,7 +218,7 @@
                             <div class="col-lg-6">
                                 <h4 class="fw-bold mb-3"><?php echo $product_name ?></h4>
                                 <p class="mb-3"><?php echo $description ?></p><?php echo $sellerPhone ?></p>
-                                <h5 class="fw-bold mb-3">Price :                                                                                                                                                                                                 <?php echo $price ?> JODs</h5>
+                                <h5 class="fw-bold mb-3">Price :                                                                                                                                                                                                                                                                                                                                                                                                 <?php echo $price ?> JODs</h5>
                                 <div class="d-flex mb-4">
 
                                     <form action="./Offer.php?offer_id=<?php echo $offer_id ?>" method="POST">

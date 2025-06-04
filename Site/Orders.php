@@ -60,22 +60,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+       
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -85,15 +76,16 @@
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
-                            <?php if($B_ID) {?>
+                            <?php if ($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
-                            <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link active">Orders</a>
                             <?php }?>
 <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
                             <?php }?>
                         </div>
                         <?php if ($B_ID) {?>
@@ -143,8 +135,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Orders</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Orders</li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item active text-white" style="color: #fff !important;">Orders</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -157,16 +149,12 @@
                     <table class="table">
                         <thead>
                           <tr>
-                            <th scope="col">Products</th>
+                            <th scope="col">#</th>
                             <th scope="col">Seller Name</th>
-                            <th scope="col">Offer</th>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Options</th>
-                            <th scope="col">Total</th>
+                            <th scope="col">Total Price</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Handle</th>
+                            <th scope="col">Items</th>
+                            <th scope="col">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -174,36 +162,15 @@
                         <?php
                             $sql33 = mysqli_query($con, "SELECT * from orders WHERE buyer_id = '$B_ID'");
 
-                            $totalPrice = 0;
-
                             while ($row33 = mysqli_fetch_array($sql33)) {
+
+                                $totalPrice = 0;
 
                                 $order_id    = $row33['id'];
                                 $offer_id    = $row33['offer_id'];
                                 $status_id   = $row33['status_id'];
+                                $seller_id   = $row33['seller_id'];
                                 $total_price = $row33['total_price'];
-
-                                $sql55 = mysqli_query($con, "SELECT product_id, seller_id, option_id, quantity from order_items WHERE order_id = '$order_id'");
-                                $row55 = mysqli_fetch_array($sql55);
-
-                                $product_id = $row55['product_id'];
-                                $seller_id  = $row55['seller_id'];
-                                $options    = json_decode($row55['option_id'], true);
-                                $color_id   = $options['color_id'];
-                                $size_id    = $options['size_id'];
-                                $quantity   = $row55['quantity'];
-
-                                $sql66 = mysqli_query($con, "SELECT name AS product_name, image AS product_image, price AS product_price from products WHERE id = '$product_id'");
-                                $row66 = mysqli_fetch_array($sql66);
-
-                                $product_name  = $row66['product_name'];
-                                $product_image = $row66['product_image'];
-                                $product_price = $row66['product_price'];
-
-                                $sql77 = mysqli_query($con, "SELECT name AS seller_name from users WHERE id = '$seller_id'");
-                                $row77 = mysqli_fetch_array($sql77);
-
-                                $seller_name = $row77['seller_name'];
 
                                 $sql88 = mysqli_query($con, "SELECT name AS status_name from statuses WHERE id = '$status_id'");
                                 $row88 = mysqli_fetch_array($sql88);
@@ -215,56 +182,65 @@
 
                                 $offer_title = $row99['title'];
 
-                                if ($color_id != '') {
+                                $sql77 = mysqli_query($con, "SELECT name AS seller_name from users WHERE id = '$seller_id'");
+                                $row77 = mysqli_fetch_array($sql77);
 
-                                    $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
+                                $seller_name = $row77['seller_name'];
+
+                                $sql55 = mysqli_query($con, "SELECT product_id, option_id, quantity, product_price from order_items WHERE order_id = '$order_id'");
+
+                                while ($row55 = mysqli_fetch_array($sql55)) {
+
+                                    $product_id    = $row55['product_id'];
+                                    $options       = json_decode($row55['option_id'], true);
+                                    $color_id      = $options['color_id'];
+                                    $size_id       = $options['size_id'];
+                                    $quantity      = $row55['quantity'];
+                                    $product_price = $row55['product_price'];
+
+                                    $sql66 = mysqli_query($con, "SELECT name AS product_name, image AS product_image, price AS product_price from products WHERE id = '$product_id'");
                                     $row66 = mysqli_fetch_array($sql66);
 
-                                    $color_value = $row66['value'];
+                                    $product_name  = $row66['product_name'];
+                                    $product_image = $row66['product_image'];
+
+                                    if ($color_id != '') {
+
+                                        $sql66 = mysqli_query($con, "SELECT value from product_options WHERE id = '$color_id'");
+                                        $row66 = mysqli_fetch_array($sql66);
+
+                                        $color_value = $row66['value'];
+                                    }
+
+                                    if ($size_id != '') {
+
+                                        $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
+                                        $row77 = mysqli_fetch_array($sql77);
+
+                                        $size_value = $row77['value'];
+
+                                    }
+
+                                    $totalPrice += ($product_price * $quantity);
                                 }
-
-                                if ($size_id != '') {
-
-                                    $sql77 = mysqli_query($con, "SELECT value from product_options WHERE id = '$size_id'");
-                                    $row77 = mysqli_fetch_array($sql77);
-
-                                    $size_value = $row77['value'];
-
-                                }
-
-                                $totalPrice += ($product_price * $quantity);
-
                             ?>
 
                             <tr>
-                                <th scope="row">
-                                    <div class="d-flex align-items-center">
-                                        <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
-                                    </div>
-                                </th>
+
+                                <td>
+                                    <p class="mb-0 mt-4"><?php echo $order_id ?></p>
+                                </td>
                                 <td>
                                     <p class="mb-0 mt-4"><?php echo $seller_name ?></p>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4"><?php echo $offer_title ?></p>
-                                </td>
-                                <td>
-                                    <p class="mb-0 mt-4"><?php echo $product_name ?></p>
-                                </td>
-                                <td>
-                                    <p class="mb-0 mt-4"><?php echo $product_price ?> JODs</p>
-                                </td>
-                                <td>
-                                <p class="mb-0 mt-4"><?php echo $quantity ?></p>
-                                </td>
-                                <td>
-                                <p class="mb-0 mt-4"><?php echo $color_value . ' ' . $size_value ?></p>
-                                </td>
-                                <td>
-                                    <p class="mb-0 mt-4"><?php echo $offer_id ? $total_price : ($product_price * $quantity) ?> JODs</p>
+                                    <p class="mb-0 mt-4"><?php echo $totalPrice ?> JODs</p>
                                 </td>
                                 <td>
                                     <p class="mb-0 mt-4"><?php echo $status_name ?></p>
+                                </td>
+                                <td>
+                                <button onclick="onClick(event)" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-success" id="btn-<?php echo $order_id ?>">View Items</button>
                                 </td>
                                 <td>
 
@@ -286,12 +262,64 @@
                             </tr>
 
 
-<?php }?>
+<?php
+}?>
 
                         </tbody>
                     </table>
                 </div>
+                <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Items</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
 
+
+
+              <div class="col-sm-12 col-md-12 col-lg-12">
+
+                  <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Item Name</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Options</th>
+                              <th scope="col">QTY</th>
+                              <th scope="col">Total</th>
+                            </tr>
+                          </thead>
+                          <tbody id="modaltbody">
+
+
+
+                          </tbody>
+                      </table>
+              </div>
+
+
+
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
             </div>
         </div>
@@ -317,7 +345,53 @@
     <script src="lib/lightbox/js/lightbox.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
+    <script>
+        const onClick = (e) => {
 
+            $('#modaltbody').empty();
+            fetch(`./Get_order_items.php?order_id=${e.target.id.split('btn-')[1]}`)
+            .then(res => res.json())
+            .then(res => {
+
+            res.forEach(item => {
+
+
+
+
+                    let itemHtml = `
+
+
+                    <tr>
+                                    <td>
+                                        <p class="mb-0 mt-4">${item.prroduct_name}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">${item.price} JODs</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">${item.color_value ?? ''} ${item.size_value ?? ''}</p>
+                                    </td>
+                                    <td>
+                                    <p class="mb-0 mt-4">${item.qty}</p>
+                                    </td>
+                                                                        <td>
+                                        <p class="mb-0 mt-4">${item.price * item.qty} JODs</p>
+                                    </td>
+
+
+
+
+                    </tr>
+     `
+
+
+                    $('#modaltbody').append(itemHtml);
+
+                })
+            })
+
+        }
+    </script>
 
 
 

@@ -18,6 +18,7 @@ if (!$S_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
+    $image = $row1['image'];
 
     $sql222 = mysqli_query($con, "SELECT end_date FROM seller_subscriptions WHERE seller_id = '$S_ID'");
     $row2222 = mysqli_fetch_array($sql222);

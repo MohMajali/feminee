@@ -61,9 +61,9 @@
         $product_id = $_POST['product_id'];
         $B_ID       = $_POST['B_ID'];
 
-        $stmt = $con->prepare("INSERT INTO product_feedbacks (buyer_id, product_id, feedback) VALUES (?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO product_feedbacks (buyer_id, product_id, feedback) VALUES (?, ?, ?) ");+
 
-        $stmt->bind_param("iis", $buyer_id, $product_id, $feedback);
+        $stmt->bind_param("iis", $B_ID, $product_id, $feedback);
 
         if ($stmt->execute()) {
 
@@ -128,22 +128,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+          
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -160,9 +151,11 @@
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
-<?php if (! $B_ID) {?>
+                            <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
-                            <?php }?>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
+                            <?php } ?>
                         </div>
                         <?php if ($B_ID) {?>
 
@@ -211,8 +204,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6"><?php echo $productName ?> Detail</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item"><a href="./Products.php">Products</a></li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item"><a href="./Products.php" style="color: #fff !important;">Products</a></li>
                 <li class="breadcrumb-item active text-white"><?php echo $productName ?> Detail</li>
             </ol>
         </div>
@@ -415,6 +408,8 @@
                             </form>
                         </div>
                     </div>
+
+
                     <div class="col-lg-4 col-xl-3">
                         <div class="row g-4 fruite">
                             <div class="col-lg-12">
@@ -488,6 +483,8 @@
 
                         </div>
                     </div>
+
+                    
                 </div>
                 <h1 class="fw-bold mb-0">Related products</h1>
 

@@ -6,7 +6,6 @@
     $B_ID = $_SESSION['B_ID'];
 
     use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
 
     require '../phpmailer/src/Exception.php';
     require '../phpmailer/src/PHPMailer.php';
@@ -21,7 +20,7 @@
 
         if (isset($_POST['Submit'])) {
 
-            $buyer_id = $_POST['B_ID'];
+            $buyer_id = $_POST=['B_ID'];
 
             $cart = [];
 
@@ -32,8 +31,7 @@
             while ($cartRow = mysqli_fetch_array($cartSql)) {
 
                 $product_id = $cartRow['product_id'];
-
-                $qty = $cartRow['qty'];
+                $qty        = $cartRow['qty'];
 
                 $productSql = mysqli_query($con, "SELECT seller_id, price from products WHERE id = '$product_id'");
                 $productRow = mysqli_fetch_array($productSql);
@@ -44,7 +42,7 @@
 
                 $totalPrice += ($price * $qty);
 
-                $cart[] = [
+                $cart[$seller_id][] = [
                     'cart_id'    => $cartRow['id'],
                     'product_id' => $cartRow['product_id'],
                     'seller_id'  => $seller_id,
@@ -55,96 +53,98 @@
 
             }
 
-            foreach ($cart as $item) {
+            foreach ($cart as $sellerId => $list) {
 
-                $cart_id    = $item['cart_id'];
-                $seller_id  = $item['seller_id'];
-                $product_id = $item['product_id'];
-                $options    = $item['options'];
-                $qty        = $item['qty'];
+                $stmt = $con->prepare("INSERT INTO orders (buyer_id, total_price, seller_id) VALUES (?, ?, ?) ");
 
-                $stmt = $con->prepare("INSERT INTO orders (buyer_id, total_price) VALUES (?, ?) ");
-
-                $stmt->bind_param("id", $buyer_id, $totalPrice);
+                $stmt->bind_param("idi", $buyer_id, $totalPrice, $sellerId);
 
                 if ($stmt->execute()) {
 
                     $order_id = $stmt->insert_id;
 
-                    $orderItemStmt = $con->prepare("INSERT INTO order_items (order_id, seller_id, product_id, option_id, quantity) VALUES (?, ?, ?, ?, ?) ");
+                    foreach ($list as $item) {
 
-                    $orderItemStmt->bind_param("iiisi", $order_id, $seller_id, $product_id, $options, $qty);
+                        $product_id    = $item['product_id'];
+                        $options       = $item['options'];
+                        $qty           = $item['qty'];
+                        $cart_id       = $item['cart_id'];
+                        $product_price = $item['price'];
 
-                    if ($orderItemStmt->execute()) {
+                        $orderItemStmt = $con->prepare("INSERT INTO order_items (order_id, seller_id, product_id, option_id, quantity, product_price) VALUES (?, ?, ?, ?, ?, ?)");
 
-                        $productStmt = $con->prepare("SELECT qty AS product_qty FROM products WHERE id = ?");
-                        $productStmt->bind_param("i", $product_id);
+                        $orderItemStmt->bind_param("iiisid", $order_id, $sellerId, $product_id, $options, $qty, $product_price);
 
-                        $productStmt->execute();
+                        if ($orderItemStmt->execute()) {
 
-                        $productStmt->store_result();
+                            $productStmt = $con->prepare("SELECT qty AS product_qty FROM products WHERE id = ?");
+                            $productStmt->bind_param("i", $product_id);
 
-                        if ($productStmt->num_rows > 0) {
+                            $productStmt->execute();
 
-                            $productStmt->bind_result($product_qty);
-                            $productStmt->fetch();
+                            $productStmt->store_result();
 
-                            $newQty = $product_qty - $item['qty'];
-                            $active = $newQty == 0 ? 0 : 1;
+                            if ($productStmt->num_rows > 0) {
 
-                            $updateProductStmt = $con->prepare("UPDATE products SET qty = ?, active = ? WHERE id = ?");
+                                $productStmt->bind_result($product_qty);
+                                $productStmt->fetch();
 
-                            $updateProductStmt->bind_param("iii", $newQty, $active, $product_id);
+                                $newQty = $product_qty - $item['qty'];
+                                $active = $newQty == 0 ? 0 : 1;
 
-                            if ($updateProductStmt->execute()) {
+                                $updateProductStmt = $con->prepare("UPDATE products SET qty = ?, active = ? WHERE id = ?");
 
-                                $DeleteFromCartStmt = $con->prepare("DELETE FROM carts WHERE id = ?");
+                                $updateProductStmt->bind_param("iii", $newQty, $active, $product_id);
 
-                                $DeleteFromCartStmt->bind_param("i", $cart_id);
-                                $DeleteFromCartStmt->execute();
+                                if ($updateProductStmt->execute()) {
 
-                                $sellersSql = mysqli_query($con, "select * from users where id='$seller_id'");
-                                $sellerRow  = mysqli_fetch_array($sellersSql);
+                                    $DeleteFromCartStmt = $con->prepare("DELETE FROM carts WHERE id = ?");
 
-                                $sellerEmail = $sellerRow['email'];
+                                    $DeleteFromCartStmt->bind_param("i", $cart_id);
+                                    $DeleteFromCartStmt->execute();
 
-                                $buyerSql = mysqli_query($con, "select * from users where id='$buyer_id'");
-                                $buyerRow = mysqli_fetch_array($buyerSql);
+                                    $sellersSql = mysqli_query($con, "select * from users where id='$sellerId'");
+                                    $sellerRow  = mysqli_fetch_array($sellersSql);
 
-                                $buyerName  = $buyerRow['name'];
-                                $buyerEmail = $buyerRow['email'];
+                                    $sellerEmail = $sellerRow['email'];
 
-                                //whunewnggqjhqyoa
+                                    $buyerSql = mysqli_query($con, "select * from users where id='$buyer_id'");
+                                    $buyerRow = mysqli_fetch_array($buyerSql);
 
-                                try {
+                                    $buyerName  = $buyerRow['name'];
+                                    $buyerEmail = $buyerRow['email'];
 
-                                    $mail = new PHPMailer(true);
+                                    try {
 
-                                    $mail->isSMTP();
-                                    $mail->Host       = 'smtp.gmail.com';
-                                    $mail->SMTPAuth   = true;
-                                    $mail->Username   = 'femineeproject@gmail.com';
-                                    $mail->Password   = 'whunewnggqjhqyoa';
-                                    $mail->SMTPSecure = 'ssl';
-                                    $mail->Port       = 465;
+                                        $mail = new PHPMailer(true);
 
-                                    $mail->setFrom($buyerEmail);
-                                    $mail->addAddress($sellerEmail);
+                                        $mail->isSMTP();
+                                        $mail->Host       = 'smtp.gmail.com';
+                                        $mail->SMTPAuth   = true;
+                                        $mail->Username   = 'femineeproject@gmail.com';
+                                        $mail->Password   = 'whunewnggqjhqyoa';
+                                        $mail->SMTPSecure = 'ssl';
+                                        $mail->Port       = 465;
 
-                                    $mail->Subject = "Order Request";
-                                    $mail->Body    = "A Request From {$buyerName}";
+                                        $mail->setFrom($buyerEmail);
+                                        $mail->addAddress($sellerEmail);
 
-                                    $mail->send();
+                                        $mail->Subject = "Order Request";
+                                        $mail->Body    = "A Request From {$buyerName}";
 
-                                } catch (Exception $e) {
+                                        $mail->send();
 
-                                    echo $e->getMessage();
+                                    } catch (Exception $e) {
+
+                                        echo $e->getMessage();
+                                        die;
+                                    }
+
                                 }
-
                             }
-
                         }
                     }
+
                 }
             }
 
@@ -224,7 +224,7 @@
             </div>
             <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+            <img src="../assets//img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -243,6 +243,8 @@
                             <?php }?>
 <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
                             <?php }?>
                         </div>
                         <?php if ($B_ID) {?>
@@ -292,8 +294,8 @@
         <div class="container-fluid page-header py-5">
             <h1 class="text-center text-white display-6">Checkout</h1>
             <ol class="breadcrumb justify-content-center mb-0">
-                <li class="breadcrumb-item"><a href="./index.php">Home</a></li>
-                <li class="breadcrumb-item active text-white">Checkout</li>
+                <li class="breadcrumb-item"><a href="./index.php" style="color: #fff !important;">Home</a></li>
+                <li class="breadcrumb-item active text-white" style="color: #fff !important;">Checkout</li>
             </ol>
         </div>
         <!-- Single Page Header End -->
@@ -303,10 +305,15 @@
         <div class="container-fluid py-5">
             <div class="container py-5">
                 <h1 class="mb-4">Billing details</h1>
-                <form action="./Checkout.php" method="POST">
+                <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="POST" id="checkoutForm">
 
 
                 <input type="hidden" name="B_ID" value="<?php echo $B_ID ?>" id="">
+
+
+
+
+
                     <div class="row g-5">
 
                         <div class="col-md-12 col-lg-12 col-xl-12">
@@ -414,17 +421,41 @@
                                             <td class="py-5"></td>
                                             <td class="py-5">
                                                 <div class="py-3 border-bottom border-top">
-                                                    <p class="mb-0 text-dark"><?php echo $totalPrice + 2 ?> JODs</p>
+                                                    <p class="mb-0 text-dark"><?php echo $totalPrice + 1 ?> JODs</p>
                                                 </div>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
+
+
+                            <input type="hidden" name="cmd" value="_xclick">
+                            <input type="hidden" name="business" value="sb-ps6it41795949@business.example.com">
+                            <input type="hidden" name="currency_code" value="USD">
+                            <input type="hidden" name="amount" value="<?php echo $totalPrice + 1; ?>">
+                            <input type="hidden" name="return" value="http://localhost/feminee/Site/Make_Checkout.php?status=success&B_ID=<?php echo $B_ID?>">
+                            <input type="hidden" name="cancel_return" value="http://localhost/feminee/Site/index.php">
+
+
+
+
+
+
+
+
+
                             <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                                 <div class="col-12">
                                     <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer" value="Transfer">
+                                    <input
+        type="radio"
+        class="form-check-input bg-primary border-0"
+        id="payment-bank"
+        name="payment_method"
+        value="bank"
+        checked
+      >
                                         <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
                                     </div>
                                     <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
@@ -434,11 +465,47 @@
                             <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                                 <div class="col-12">
                                     <div class="form-check text-start my-3">
-                                        <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery" value="Delivery">
+                                    <input
+        type="radio"
+        class="form-check-input bg-primary border-0"
+        id="payment-cod"
+        name="payment_method"
+        value="cod"
+      >
                                         <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
                                     </div>
                                 </div>
                             </div>
+
+
+                            <script>
+  (function(){
+    // 1) grab elements
+    var form     = document.getElementById('checkoutForm');
+    var bank     = document.getElementById('payment-bank');
+    var cod      = document.getElementById('payment-cod');
+
+    // 2) define the two destinations
+    var PAYPAL_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+    var COD_URL    = './Checkout.php';  // change to your COD endpoint
+
+    // 3) updater function
+    function updateAction(){
+      if (bank.checked) {
+        form.action = PAYPAL_URL;
+      } else if (cod.checked) {
+        form.action = COD_URL;
+      }
+    }
+
+    // 4) wire up change events
+    bank.addEventListener('change', updateAction);
+    cod.addEventListener('change', updateAction);
+
+    // 5) set initial action on page-load
+    updateAction();
+  })();
+                            </script>
 
                             <div class="row g-4 text-center align-items-center justify-content-center pt-4">
                                 <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" name="Submit">Place Order</button>
@@ -452,95 +519,8 @@
 
 
         <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-            <div class="container py-5">
-                <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
-                    <div class="row g-4">
-                        <div class="col-lg-3">
-                            <a href="#">
-                                <h1 class="text-primary mb-0">Fruitables</h1>
-                                <p class="text-secondary mb-0">Fresh products</p>
-                            </a>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="position-relative mx-auto">
-                                <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number" placeholder="Your Email">
-                                <button type="submit" class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white" style="top: 0; right: 0;">Subscribe Now</button>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="d-flex justify-content-end pt-3">
-                                <a class="btn  btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                                <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-5">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="footer-item">
-                            <h4 class="text-light mb-3">Why People Like us!</h4>
-                            <p class="mb-4">typesetting, remaining essentially unchanged. It was
-                                popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.</p>
-                            <a href="" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Read More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="d-flex flex-column text-start footer-item">
-                            <h4 class="text-light mb-3">Shop Info</h4>
-                            <a class="btn-link" href="">About Us</a>
-                            <a class="btn-link" href="">Contact Us</a>
-                            <a class="btn-link" href="">Privacy Policy</a>
-                            <a class="btn-link" href="">Terms & Condition</a>
-                            <a class="btn-link" href="">Return Policy</a>
-                            <a class="btn-link" href="">FAQs & Help</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="d-flex flex-column text-start footer-item">
-                            <h4 class="text-light mb-3">Account</h4>
-                            <a class="btn-link" href="">My Account</a>
-                            <a class="btn-link" href="">Shop details</a>
-                            <a class="btn-link" href="">Shopping Cart</a>
-                            <a class="btn-link" href="">Wishlist</a>
-                            <a class="btn-link" href="">Order History</a>
-                            <a class="btn-link" href="">International Orders</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="footer-item">
-                            <h4 class="text-light mb-3">Contact</h4>
-                            <p>Address: 1429 Netus Rd, NY 48247</p>
-                            <p>Email: Example@gmail.com</p>
-                            <p>Phone: +0123 4567 8910</p>
-                            <p>Payment Accepted</p>
-                            <img src="img/payment.png" class="img-fluid" alt="">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php require './Footer.php'; ?>
         <!-- Footer End -->
-
-        <!-- Copyright Start -->
-        <div class="container-fluid copyright bg-dark py-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>Your Site Name</a>, All right reserved.</span>
-                    </div>
-                    <div class="col-md-6 my-auto text-center text-md-end text-white">
-                        <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
-                        <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
-                        <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a> Distributed By <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Copyright End -->
 
 
 

@@ -245,6 +245,7 @@ if (!$A_ID) {
                   <?php
 $sql1 = mysqli_query($con, "SELECT * from categories ORDER BY id DESC");
 
+
 while ($row1 = mysqli_fetch_array($sql1)) {
 
     $category_id = $row1['id'];
@@ -264,16 +265,16 @@ while ($row1 = mysqli_fetch_array($sql1)) {
               <div class="d-flex flex-column">
               <div class="d-flex mb-2">
                         <a href="./Edit-Category.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Edit</a
+                          ><i class="bi bi-pencil"></i></a
                         >
 
                         <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+<a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+  <a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary"><i class="bi bi-arrow-clockwise"></i></a>
 
 <?php }?>
                         </div>
@@ -281,11 +282,11 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                         <div class="d-flex">
 
                         <a href="./Products.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Products</a
+                          ><i class="bi bi-box-seam"></i></a
                         >
 
                         <a href="./Sub_Categories.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Sub Categories</a
+                          ><i class="bi bi-diagram-2"></i>             </a
                         >
                         </div>
               </div>

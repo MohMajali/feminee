@@ -1,95 +1,86 @@
 <?php
-session_start();
+    session_start();
 
-include "../Connect.php";
+    include "../Connect.php";
 
-$S_ID = $_SESSION['S_Log'];
+    $S_ID = $_SESSION['S_Log'];
 
-if (!$S_ID) {
+    if (! $S_ID) {
 
-    echo '<script language="JavaScript">
+        echo '<script language="JavaScript">
      document.location="../Login.php";
     </script>';
 
-} else {
+    } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id = '$S_ID'");
-    $row1 = mysqli_fetch_array($sql1);
+        $sql1 = mysqli_query($con, "select * from users where id = '$S_ID'");
+        $row1 = mysqli_fetch_array($sql1);
 
-    $name = $row1['name'];
-    $email = $row1['email'];
-    $phone = $row1['phone'];
+        $name           = $row1['name'];
+        $email          = $row1['email'];
+        $image          = $row1['image'];
+        $password          = $row1['password'];
+        $phone          = $row1['phone'];
+        $description    = $row1['description'];
+        $instagram_link = $row1['instagram_link'];
+
+        if (isset($_POST['Submit'])) {
+
+            $S_ID           = $_POST['S_ID'];
+            $name           = $_POST['name'];
+            $email          = $_POST['email'];
+            $phone          = $_POST['phone'];
+            $password       = $_POST['password'];
+            $description       = $_POST['description'];
+            $instagram_link = $_POST['instagram_link'];
+            $image          = $_FILES["file"]["name"];
+
+            if ($image) {
+
+                $image = 'Sellers_Images/' . $image;
 
 
-    if (isset($_POST['Submit'])) {
+                    $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ?, image = ?, instagram_link = ?, description = ? WHERE id = ? ");
+                    $stmt->bind_param("sssssssi", $name, $password, $phone, $email, $image, $instagram_link, $description, $S_ID);
 
-        $S_ID = $_POST['S_ID'];
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $password = $_POST['password'];
-        $image = $_FILES["file"]["name"];
+            
+                if ($stmt->execute()) {
 
-        if ($image) {
+                    move_uploaded_file($_FILES["file"]["tmp_name"], "./Sellers_Images/" . $_FILES["file"]["name"]);
 
-            $image = 'Sellers_Images/' . $image;
-
-            if ($password) {
-
-
-                $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ?, image = ?, WHERE id = ? ");
-                $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $S_ID);
-
-            } else {
-
-                $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
-                $stmt->bind_param("sssss", $name, $phone, $email, $image, $S_ID);
-            }
-
-            if ($stmt->execute()) {
-
-                move_uploaded_file($_FILES["file"]["tmp_name"], "./Sellers_Images/" . $_FILES["file"]["name"]);
-
-                echo "<script language='JavaScript'>
+                    echo "<script language='JavaScript'>
                 alert ('Account Updated Successfully !');
            </script>";
 
-                echo "<script language='JavaScript'>
+                    echo "<script language='JavaScript'>
           document.location='./Account.php';
              </script>";
 
-            }
-
-        } else {
-
-            if ($password) {
-
-
-                $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
-                $stmt->bind_param("ssssi", $name, $password, $phone, $email, $S_ID);
+                }
 
             } else {
 
-                $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ? WHERE id = ? ");
-                $stmt->bind_param("sssi", $name, $phone, $email, $S_ID);
-            }
+                    $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ?, instagram_link = ?, description = ? WHERE id = ? ");
+                    $stmt->bind_param("ssssssi", $name, $password, $phone, $email, $instagram_link, $description, $S_ID);
 
-            if ($stmt->execute()) {
+          
 
-                echo "<script language='JavaScript'>
+                if ($stmt->execute()) {
+
+                    echo "<script language='JavaScript'>
               alert ('Account Updated Successfully !');
          </script>";
 
-                echo "<script language='JavaScript'>
+                    echo "<script language='JavaScript'>
         document.location='./Account.php';
            </script>";
+
+                }
 
             }
 
         }
-
     }
-}
 
 ?>
 
@@ -154,7 +145,7 @@ if (!$S_ID) {
               data-bs-toggle="dropdown"
             >
               <img
-                src="https://www.computerhope.com/jargon/g/guest-user.png"
+                src="<?php echo $image ?>"
                 alt="Profile"
                 class="rounded-circle"
               />
@@ -242,11 +233,29 @@ if (!$S_ID) {
                   </div>
 
                   <div class="row mb-3">
+                    <label for="instagram_link" class="col-sm-2 col-form-label"
+                      >Instagram Link</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="instagram_link" name="instagram_link" value="<?php echo $instagram_link ?>" class="form-control" id="instagram_link" />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
                     <label for="password" class="col-sm-2 col-form-label"
                       >Password</label
                     >
                     <div class="col-sm-10">
-                      <input type="password" name="password" value="<?php echo $password ?>" class="form-control" id="password" />
+                      <input type="text" name="password" value="<?php echo $password ?>" class="form-control" id="password" />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="description" class="col-sm-2 col-form-label"
+                      >description</label
+                    >
+                    <div class="col-sm-10">
+                      <textarea name="description" class="form-control" id="description" value="description"><?php echo $description ?></textarea>
                     </div>
                   </div>
 

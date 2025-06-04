@@ -84,22 +84,13 @@
 
         <!-- Navbar start -->
         <div class="container-fluid fixed-top">
-            <div class="container topbar bg-primary d-none d-lg-block">
-                <div class="d-flex justify-content-between">
-                    <div class="top-info ps-2">
-                        <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#" class="text-white">123 Street, New York</a></small>
-                        <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-                    </div>
-                    <div class="top-link pe-2">
-                        <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                        <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-                    </div>
-                </div>
-            </div>
+    
             <div class="container px-0">
                 <nav class="navbar navbar-light bg-white navbar-expand-xl">
-                    <a href="index.php" class="navbar-brand"><h1 class="text-primary display-6">Feminee</h1></a>
+                <a href="index.php" class="navbar-brand">
+                        <img src="../assets/img/Logo.png" class="img-fluid" alt="" style="height: 70px; width:70px;">
+                        <p class="p-0 m-0">Feminee</p>
+                    </a>
                     <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                         <span class="fa fa-bars text-primary"></span>
                     </button>
@@ -109,15 +100,16 @@
                             <a href="Products.php" class="nav-item nav-link">Products</a>
                             <a href="Sellers.php" class="nav-item nav-link">Sellers</a>
                             <a href="Offers.php" class="nav-item nav-link">Offers</a>
-                            <?php if($B_ID) {?>
+                            <?php if ($B_ID) {?>
                                 <a href="Favorites.php" class="nav-item nav-link">Favorites</a>
                                 <?php }?>
-                            <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php if ($B_ID) {?>
                                 <a href="Orders.php" class="nav-item nav-link">Orders</a>
                             <?php }?>
 <?php if (! $B_ID) {?>
                             <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <?php } else {?>
+                                <a href="./Logout.php" class="nav-item nav-link">Logout</a>
                             <?php }?>
                         </div>
                         <?php if ($B_ID) {?>
@@ -164,53 +156,78 @@
 
 
         <!-- Hero Start -->
-        <div class="container-fluid py-5 mb-5 hero-header">
-            <div class="container py-5">
-                <div class="row g-5 align-items-center">
-                    <div class="col-md-12 col-lg-7">
-                        <h4 class="mb-3 secondry-text">XXXX XXXX XXXX</h4>
-                        <h1 class="mb-5 display-3 text-primary">XXXX XXXX XXXX</h1>
-                        <div class="position-relative mx-auto">
-                            <!-- <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number" placeholder="Search">
-                            <button type="submit" class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100" style="top: 0; right: 25%;">Submit Now</button> -->
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-lg-5">
-                        <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
-                            <div class="carousel-inner" role="listbox">
-                            <?php
-                                $sql1 = mysqli_query($con, "SELECT * from advertisements WHERE active = 1");
+        <div class="container-fluid py-5 mb-5 hero-header" style="background-color: #ffc1ccd4;">
+  <div class="container py-5">
+    <div class="row g-5 align-items-center">
+      <div class="col-12">
+        <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
+          <div class="carousel-inner">
+          <?php
+                                $sql1 = mysqli_query($con, "SELECT * from users WHERE active = 1 and user_type_id = 2");
 
+                                $counter = 0;
                                 while ($row1 = mysqli_fetch_array($sql1)) {
 
-                                    $adv_id    = $row1['id'];
-                                    $adv_title = $row1['title'];
-                                    $adv_image = $row1['image'];
+                                    $seller_id_carousel   = $row1['id'];
+                                    $sellerName_coursel   = $row1['name'];
+                                    $sellerImage_carousel = $row1['image'];
+                                    $sellerdescription_carousel = $row1['description'];
+
+                                    $isActive = $counter === 0 ? 'active' : '';
+                                    $counter++;
 
                                 ?>
 
-                                <div class="carousel-item active rounded">
-                                    <img src="../Admin_Dashboard/<?php echo $adv_image ?>" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
-                                    <a href="#" class="btn px-4 py-2 text-white rounded"><?php echo $adv_title ?></a>
-                                </div>
 
-                                <?php }?>
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselId" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="carousel-item <?= $isActive ?>" id="<?= $seller_id_carousel ?>" onclick="onClick(<?= $seller_id_carousel ?>)">
+  <div class="row gx-0 align-items-stretch">
+    <!-- Image column -->
+     <div class="col-md-1"></div>
+    <div class="col-md-4">
+      <img
+        src="../Seller_Dashboard/<?= $sellerImage_carousel ?>"
+        class="img-fluid  h-100 object-fit-cover rounded-start"
+        alt="<?= htmlspecialchars($sellerName_coursel) ?>"
+      >
+    </div>
+    <!-- Text column -->
+    <div class="col-md-6 d-flex text-center">
+      <div class="p-3 border rounded flex-fill">
+        <h5 class="mb-2 mt-3"><?= htmlspecialchars($sellerName_coursel) ?></h5>
+        <p class="mb-0"><?= htmlspecialchars($sellerdescription_carousel) ?></p>
+      </div>
+    </div>
+    
+    <div class="col-md-1"></div>
+  </div>
+</div>
+            <?php } ?>
+          </div>
+          <button class="carousel-control-prev" type="button"
+          data-bs-target="#carouselId" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button"
+          data-bs-target="#carouselId" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+          <!-- controls… -->
         </div>
+      </div>
+    </div>
+  </div>
+</div>
         <!-- Hero End -->
+        <script>
+        const onClick = (id) => {
 
+            console.log(id);
+
+            document.location = `./Seller.php?seller_id=${id}`
+        }
+    </script>
 
         <!-- Featurs Section Start -->
         <div class="container-fluid featurs py-5">
@@ -262,7 +279,7 @@
                 <div class="tab-class text-center">
                     <div class="row g-4">
                         <div class="col-lg-4 text-start">
-                            <h1>Our Organic Products</h1>
+                            <h1>Our Best Products</h1>
                         </div>
                         <div class="col-lg-8 text-end">
                             <ul class="nav nav-pills d-inline-flex text-center mb-5">
@@ -297,14 +314,14 @@
                                 <div class="col-lg-12">
                                     <div class="row g-4">
                                     <?php
-                                        $sql1 = mysqli_query($con, "SELECT * from products WHERE active = 1");
+                                        $sql1 = mysqli_query($con, "SELECT * from products WHERE active = 1 AND total_rate >= 3.5");
 
                                         while ($row1 = mysqli_fetch_array($sql1)) {
 
                                             $product_id          = $row1['id'];
                                             $seller_id           = $row1['seller_id'];
                                             $category_id         = $row1['category_id'];
-                                            $product_name        = $row1['name'];
+                                            $product_name        = substr($row1['name'], 0, 10) . '...';
                                             $product_description = $row1['description'];
                                             $product_image       = $row1['image'];
                                             $product_price       = $row1['price'];
@@ -337,7 +354,7 @@
                                             <?php }?>
 
                                                 <div class="fruite-img">
-                                                    <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                                 </div>
                                                 <div class="text-white background-sec px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;"><?php echo $categoryName ?></div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -377,13 +394,13 @@
                                 <div class="col-lg-12">
                                     <div class="row g-4">
                                     <?php
-                                        $productTabSql = mysqli_query($con, "SELECT * from products WHERE active = 1 AND category_id = '$category_id_tab'");
+                                        $productTabSql = mysqli_query($con, "SELECT * from products WHERE active = 1 AND category_id = '$category_id_tab' AND total_rate >= 3.5");
 
                                             while ($productTabRow = mysqli_fetch_array($productTabSql)) {
 
                                                 $product_id              = $productTabRow['id'];
                                                 $seller_id_tab           = $productTabRow['seller_id'];
-                                                $product_name_tab        = $productTabRow['name'];
+                                                $product_name_tab        = substr($productTabRow['name'], 0, 10) . '...';
                                                 $product_description_tab = $productTabRow['description'];
                                                 $product_image_tab       = $productTabRow['image'];
                                                 $product_price_tab       = $productTabRow['price'];
@@ -400,7 +417,7 @@
                                             <div class="rounded position-relative fruite-item">
 
                                                 <div class="fruite-img">
-                                                    <img src="../Seller_Dashboard/<?php echo $product_image ?>" class="img-fluid w-100 rounded-top" alt="">
+                                                    <img src="../Seller_Dashboard/<?php echo $product_image_tab ?>" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                                                 </div>
                                                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;"><?php echo $category_name_tab ?></div>
                                                 <div class="p-4 border border-secondary border-top-0 rounded-bottom">
@@ -408,7 +425,7 @@
                                                     <p><?php echo substr($product_description_tab, 0, 10) . '.....' ?></p>
                                                     <div class="d-flex justify-content-between flex-lg-wrap">
                                                         <p class="text-dark fs-5 fw-bold mb-0"><?php echo $product_price_tab ?> JODs</p>
-                                                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                        <a href="./Product.php?" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -450,7 +467,7 @@
                     ?>
                     <div class="border border-primary rounded position-relative vesitable-item">
                         <div class="vesitable-img">
-                            <img src="../Seller_Dashboard/<?php echo $seller_image ?>" class="img-fluid w-100 rounded-top" alt="">
+                            <img src="../Seller_Dashboard/<?php echo $seller_image ?>" class="img-fluid w-100 rounded-top" alt="" style="height: 220px;">
                         </div>
                         <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;"></div>
                         <div class="p-4 rounded-bottom">
@@ -458,7 +475,7 @@
                             <p><?php echo substr($seller_description, 0, 10) . '....' ?></p>
                             <div class="d-flex justify-content-between flex-lg-wrap">
                                 <p class="text-dark fs-5 fw-bold mb-0"></p>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                <a href="./Seller.php?seller_id=<?php echo $seller_id ?>" class="btn border border-secondary rounded-pill px-3 text-primary"> View Seller</a>
                             </div>
                         </div>
                     </div>
@@ -478,21 +495,15 @@
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-6">
                         <div class="py-4">
-                            <h1 class="display-3 text-white">Fresh Exotic Fruits</h1>
+                            <h1 class="display-3 text-white">FEMMINEE</h1>
                             <p class="fw-normal display-3 text-dark mb-4">in Our Store</p>
-                            <p class="mb-4 text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.</p>
+                            <p class="mb-4 text-dark">We sell fresh products thats made with love.</p>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="position-relative">
-                            <img src="img/baner-1.png" class="img-fluid w-100 rounded" alt="">
-                            <div class="d-flex align-items-center justify-content-center bg-white rounded-circle position-absolute" style="width: 140px; height: 140px; top: 0; left: 0;">
-                                <h1 style="font-size: 100px;">1</h1>
-                                <div class="d-flex flex-column">
-                                    <span class="h2 mb-0">50$</span>
-                                    <span class="h4 text-muted mb-0">kg</span>
-                                </div>
-                            </div>
+                            <img src="./img/banner1.png" class="img-fluid w-100 rounded" alt="">
+
                         </div>
                     </div>
                 </div>
@@ -501,64 +512,6 @@
         <!-- Banner Section End -->
 
 
-        <!-- Bestsaler Product Start -->
-        <div class="container-fluid py-5">
-            <div class="container py-5">
-                <div class="text-center mx-auto mb-5" style="max-width: 700px;">
-                    <h1 class="display-4">Bestseller Products</h1>
-                    <p>Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.</p>
-                </div>
-                <div class="row g-4">
-
-                <?php
-                    $productTopRatedSql = mysqli_query($con, "SELECT * from products WHERE active = 1 AND total_rate >= 3.5");
-
-                    while ($productTopRatedRow = mysqli_fetch_array($productTopRatedSql)) {
-
-                        $product_id                    = $productTopRatedRow['id'];
-                        $seller_id_top_rated           = $productTopRatedRow['seller_id'];
-                        $product_name_top_rated        = $productTopRatedRow['name'];
-                        $product_description_top_rated = $productTopRatedRow['description'];
-                        $product_total_rate_top_rated  = $productTopRatedRow['total_rate'];
-                        $product_image_top_rated       = $productTopRatedRow['image'];
-                        $product_price_top_rated       = $productTopRatedRow['price'];
-                        $active_top_rated              = $productTopRatedRow['active'];
-                        $created_at_top_rated          = $productTopRatedRow['created_at'];
-
-                        $sellerSqlTopRated = mysqli_query($con, "SELECT * FROM users WHERE id = '$seller_id'");
-                        $sellerRowTopRated = mysqli_fetch_array($sellerSqlTopRated);
-
-                        $sellerNametop_rated = $sellerRowTopRated['name'];
-
-                    ?>
-                    <div class="col-lg-6 col-xl-4">
-                        <div class="p-4 rounded bg-light">
-                            <div class="row align-items-center">
-                                <div class="col-6">
-                                    <img src="../Seller_Dashboard/<?php echo $product_image_top_rated ?>" class="img-fluid rounded-circle w-100" alt="">
-                                </div>
-                                <div class="col-6">
-                                    <a href="#" class="h5"><?php echo $product_name_top_rated ?></a>
-                                    <div class="d-flex my-3">
-
-                                    <?php for ($i = 1; $i < $product_total_rate_top_rated; $i++) {?>
-                                        <i class="fas fa-star text-primary"></i>
-                                        <?php }?>
-
-                                    </div>
-                                    <h4 class="mb-3"><?php echo $product_price_top_rated ?> JODs</h4>
-                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-            <?php }?>
-
-                </div>
-            </div>
-        </div>
-        <!-- Bestsaler Product End -->
 
 
         <!-- Fact Start -->

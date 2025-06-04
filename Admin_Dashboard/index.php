@@ -19,11 +19,17 @@
         $name  = $row1['name'];
         $email = $row1['email'];
 
-        $orderSql = mysqli_query($con, "select SUM(total_price) AS total_price, COUNT(id) AS orders_count from orders");
+        $totalPrice = 0;
+
+        $orderSql = mysqli_query($con, "select COUNT(id) AS orders_count from orders");
         $orderRow = mysqli_fetch_array($orderSql);
 
-        $total_price  = $orderRow['total_price'];
         $orders_count = $orderRow['orders_count'];
+
+        $totalPriceSql = mysqli_query($con, "select SUM(product_price * quantity) AS total_price from order_items");
+        $totalPriceRow = mysqli_fetch_array($totalPriceSql);
+
+        $total_price = $totalPriceRow['total_price'];
 
         $productSql = mysqli_query($con, "select COUNT(id) AS products_count from products WHERE active = 1");
         $productRow = mysqli_fetch_array($productSql);
@@ -143,7 +149,7 @@
          <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card basic">
               <div class="card-body">
-                <h5 class="card-title">Welcome to femniee</h5>
+                <h5 class="card-title">fejfb efbehi hb</h5>
 
                 fkenf efneiujf hjbfe
 
